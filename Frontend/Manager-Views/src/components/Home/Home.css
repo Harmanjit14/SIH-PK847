@@ -1,0 +1,25 @@
+.certi-sec {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.certi-section {
+  display: flex;
+}
+
+.certi-section-1,
+.certi-section-2 {
+  display: flex;
+  flex-direction: row;
+}
+
+.certi-section-1a,
+.certi-section-1b,
+.certi-section-1c,
+.certi-section-2a,
+.certi-section-2b,
+.certi-section-2c {
+  flex: 0.33;
+  margin: 40px;
+  box-shadow: 10px 10px 5px 12px grey;
+}

@@ -1,0 +1,33 @@
+.card {
+  width: 100%;
+  height: 300px;
+  border: 2px solid gray;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: white;
+}
+
+.card-title {
+  margin-bottom: 6px;
+  padding: 10px;
+  height: 20px;
+}
+
+.card-body {
+  margin-bottom: 8px;
+}
+
+.card-image {
+  height: 100px;
+  width: 100px;
+  margin: 6px;
+}
+
+.card-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+.card-button1 {
+  margin-right: 220px;
+}
