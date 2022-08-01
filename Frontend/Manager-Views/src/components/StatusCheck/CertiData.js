@@ -1,31 +1,31 @@
-const partners = {
-  info: [
+const statusInfo = {
+  data: [
     {
       id: 1,
       text: "Bada Bansal",
-      load: "5",
+      status: "Pending",
     },
     {
       id: 2,
       text: "Chotta Bansal",
-      load: "5",
+      status: "Pending",
     },
     {
       id: 3,
       text: "Harman",
-      load: "5",
+      status: "Pending",
     },
     {
       id: 4,
       text: "Kunal",
-      load: "5",
+      status: "Pending",
     },
     {
       id: 5,
       text: "Manroop",
-      load: "5",
+      status: "Pending",
     },
   ],
 };
 
-export { partners };
+export { statusInfo };

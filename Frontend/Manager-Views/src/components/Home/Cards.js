@@ -39,7 +39,7 @@ function Card({ Cardtitle, Cardbody }) {
             target="_blank"
             rel="noopener"
           >
-            Status
+            Remove
           </Button>
         </div>
       </div>

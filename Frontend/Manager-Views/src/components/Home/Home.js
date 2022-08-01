@@ -9,6 +9,9 @@ const Home = () => {
     <div className="home">
       <Header />
       <div className="certi-sec">
+        <div className="certiHeading">
+          <h2>Pending Requests</h2>
+        </div>
         <div className="certi-section-1">
           <div className="certi-section-1a">
             <Card

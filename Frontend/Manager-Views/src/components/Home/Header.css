@@ -6,18 +6,29 @@
   height: 100px;
 }
 
-.deli {
+.req {
   margin-bottom: 20px;
   margin-left: 800px;
+}
+.deli {
+  margin-bottom: 20px;
+  margin-left: 40px;
 }
 .stats {
   margin-bottom: 20px;
   margin-left: 40px;
 }
 
+.req h4,
 .deli h4,
 .stats h4 {
   color: black;
-  font-size: 30px;
-  font-weight: 300;
+  font-size: 27px;
+  font-weight: 400;
+}
+
+.req h4:hover,
+.deli h4:hover,
+.stats h4:hover {
+  color: red;
 }

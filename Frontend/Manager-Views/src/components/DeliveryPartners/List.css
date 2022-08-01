@@ -1,0 +1,32 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.listHeading {
+  margin-bottom: 20px;
+}
+.listHeading > h3 {
+  font-size: 35px;
+  font-weight: 500;
+}
+
+table {
+  border-collapse: collapse;
+  width: 50%;
+}
+
+th,
+td {
+  text-align: center;
+  padding: 12px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: lightgreen;
+}
