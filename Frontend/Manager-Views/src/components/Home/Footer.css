@@ -1,0 +1,13 @@
+.footer-text {
+  text-align: center;
+  color: black;
+  font-size: 25px;
+  font-weight: 600;
+  font-family: Arial, Helvetica, sans-serif;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+.footer-div {
+  margin: 15px auto;
+}
