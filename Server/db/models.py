@@ -2,7 +2,7 @@
 from django.core.validators import MinValueValidator
 from uuid import uuid4
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 
@@ -20,41 +20,43 @@ class Institute(models.Model):
 
     def __str__(self):
         return self.name
-    
 
-class Academic_Records(models.Model):
-    id = models.UUIDField(primarykey=True,default=uuid4,editable=False,primary_key=True)
-    semester = models.IntegerField()
-    student = models.ForeignKey(blank=False,null=False,editable=True,max_length=255)
-    subject= models.CharField(blank=False,null=False,editable=True,max_length=255)
-    grade= models.CharField(blank=False,null=False,editable=True,max_length=2)
-    marks= models.IntegerField(null=True, validators=[MinValueValidator(0)])
-
-    def __str__(self):
-        return self.id
-    
-    
 
 class Student(models.Model):
 
     degree_choices = {
-        'BE':'Bachelors in Engineering',
-        'B.Tech':'Bachelors of Technology',
+        'BE': 'Bachelors in Engineering',
+        'B.Tech': 'Bachelors of Technology',
         'BSc': 'Bachelors of Science'
     }
 
-    id = models.UUIDField(default=uuid4,primary_key=True,editable=False)
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
     roll = models.IntegerField()
-    name= models.CharField(max_length=255, blank=False, null=False)
+    name = models.CharField(max_length=255, blank=False, null=False)
     email = models.EmailField(unique=True)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
-    mobile =  PhoneNumberField()
+    mobile = PhoneNumberField()
     dob = models.DateField()
     graduating_year = models.IntegerField(max_length=4)
-    degree =  models.CharField(choices=degree_choices, max_length=255, default='BE')
+    degree = models.CharField(choices=degree_choices,
+                              max_length=255, default='BE')
     address = models.CharField(max_length=255)
     wallet = models.IntegerField(validators=[MinValueValidator(0)])
 
     def __str__(self):
         return f'{self.institute.name} {self.roll}'
-    
+
+
+class Academic_Records(models.Model):
+    id = models.UUIDField(primarykey=True, default=uuid4,
+                          editable=False, primary_key=True)
+    semester = models.IntegerField()
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    subject = models.CharField(
+        blank=False, null=False, editable=True, max_length=255)
+    grade = models.CharField(blank=False, null=False,
+                             editable=True, max_length=2)
+    marks = models.IntegerField(null=True, validators=[MinValueValidator(0)])
+
+    def __str__(self):
+        return self.id
