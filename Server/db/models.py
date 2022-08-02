@@ -25,9 +25,9 @@ class Institute(models.Model):
 class Student(models.Model):
 
     degree_choices = {
-        'BE': 'Bachelors in Engineering',
-        'B.Tech': 'Bachelors of Technology',
-        'BSc': 'Bachelors of Science'
+        ('BE', 'Bachelors in Engineering'),
+        ('B.Tech', 'Bachelors of Technology'),
+        ('BSc', 'Bachelors of Science'),
     }
 
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
@@ -37,7 +37,7 @@ class Student(models.Model):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     mobile = PhoneNumberField()
     dob = models.DateField()
-    graduating_year = models.IntegerField(max_length=4)
+    graduating_year = models.IntegerField()
     degree = models.CharField(choices=degree_choices,
                               max_length=255, default='BE')
     address = models.CharField(max_length=255)
@@ -47,10 +47,11 @@ class Student(models.Model):
         return f'{self.institute.name} {self.roll}'
 
 
-class Academic_Records(models.Model):
-    id = models.UUIDField(primarykey=True, default=uuid4,
+class Academic_Record(models.Model):
+    id = models.UUIDField(default=uuid4,
                           editable=False, primary_key=True)
     semester = models.IntegerField()
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     subject = models.CharField(
         blank=False, null=False, editable=True, max_length=255)
@@ -59,4 +60,4 @@ class Academic_Records(models.Model):
     marks = models.IntegerField(null=True, validators=[MinValueValidator(0)])
 
     def __str__(self):
-        return self.id
+        return f'{self.id} {self.institute.name}'
