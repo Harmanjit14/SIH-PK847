@@ -1,5 +1,40 @@
-import pandas as pd
-url = "https://firebasestorage.googleapis.com/v0/b/stately-pulsar-343510.appspot.com/o/static%2Ftest.csv?alt=media&token=25adb90b-5266-4304-89a8-66c501c9733a"
+# from django.shortcuts import render
+# from django.http import FileResponse
+import io
 
-df = pd.read_csv(url)
-print(df)
+# from django.http import FileResponse
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+# from .models import Academic_Record
+
+
+
+# Create your views here.
+def generate_pdf():
+    buf=io.BytesIO()
+    c= canvas.Canvas(buf)
+    textob = c.beginText()
+    textob.setTextOrigin(inch,inch)
+    #add somelines
+    lines=[]
+    # records=Academic_Record.objects.all()
+
+    lines.append('1')
+    lines.append('3')
+    lines.append('TIET')
+    lines.append('Harman')
+    lines.append('DS')
+    lines.append('A')
+    lines.append('90')
+    lines.append("===========================")
+    for line in lines:
+        textob.textLine(line)
+    
+    c.drawText(textob)
+    c.showPage()
+    buf.seek(0)
+    
+    return FileResponse(buf, as_attachment=True, filename="certificates")
+
+generate_pdf()
