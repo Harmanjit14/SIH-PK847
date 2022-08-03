@@ -20,9 +20,12 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('generate-pdf', views.generate_pdf, name='generate-pdf')
 ]
 
 
 urlpatterns += [
     path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True))),
 ]
+
+
