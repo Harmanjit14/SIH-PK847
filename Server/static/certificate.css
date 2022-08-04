@@ -1,0 +1,54 @@
+.main-container {
+  display: flex;
+  margin: 10px;
+}
+
+h2 {
+  font-size: 30px;
+  color: black;
+}
+
+h4 {
+  font-size: 25px;
+  color: black;
+}
+
+h6 {
+  font-size: 20px;
+  color: black;
+}
+
+.sub-container {
+  align-items: center;
+}
+
+.student-info {
+  flex-direction: row;
+}
+
+.student-name {
+  align-self: flex-start;
+}
+
+.student-id {
+  align-self: flex-end;
+}
+
+.info {
+  flex-direction: column;
+}
+
+table {
+  border-collapse: collapse;
+  width: 80%;
+}
+
+th,
+td {
+  text-align: center;
+  padding: 12px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}

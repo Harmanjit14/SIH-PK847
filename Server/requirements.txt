@@ -2,7 +2,7 @@ aniso8601==7.0.0
 asgiref==3.5.2
 autopep8==1.6.0
 dj-database-url==1.0.0
-Djangodjango>=3,<4
+django==3.2.15
 django-cors-headers==3.13.0
 django-graphql-jwt==0.3.4
 django-phonenumber-field==6.3.0
