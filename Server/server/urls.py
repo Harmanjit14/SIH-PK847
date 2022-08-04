@@ -20,7 +20,7 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('generate-pdf', views.generate_pdf, name='generate-pdf')
+    #path('generate-pdf', views.generate_pdf, name='generate-pdf')
 ]
 
 
