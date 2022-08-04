@@ -13,17 +13,34 @@ class UserType(DjangoObjectType):
     class Meta:
         model = User
 
+
 class InstituteType(DjangoObjectType):
     class Meta:
         model = Institute
 
+
 class Query(graphene.ObjectType):
 
     all_institutes = graphene.List(InstituteType)
+    upload_csv = graphene.String(url=graphene.String(required=True),
+                                 subject=graphene.String(required=True),
+                                 semester=graphene.Int(required=True),
+                                 batch=graphene.Int(required=True),
+                                 institute_id=graphene.String(required=True))
 
     def resolve_all_institutes(self, info):
         ins = Institute.objects.all()
         return ins
+
+    def resolve_upload_csv(self, info, url, subject, semester, batch, institute_id):
+        # user = info.context.user
+
+        # if user.is_anonymous:
+        #     raise GraphQLError("Not Logged In!")
+        # ret = 'Done'
+        ret = UploadPDF(url=url, subject=subject, semester=semester,
+                        batch=batch, institute_id=institute_id)
+        return ret
 
 
 class CreateUser(graphene.Mutation):
@@ -66,7 +83,7 @@ class DeleteUser(graphene.Mutation):
 
 class UploadCSV(graphene.Mutation):
 
-    success = graphene.Boolean()
+    success = graphene.String()
 
     class Arguments:
         url = graphene.String(required=True)
@@ -80,9 +97,9 @@ class UploadCSV(graphene.Mutation):
 
         # if user.is_anonymous:
         #     raise GraphQLError("Not Logged In!")
-
-        ret = UploadPDF(url=url, subject=subject, semester=semester,
-                        batch=batch, institute_id=institute_id)
+        ret = 'Done'
+        # ret = UploadPDF(url=url, subject=subject, semester=semester,
+        # batch=batch, institute_id=institute_id)
         return UploadCSV(success=ret)
 
 

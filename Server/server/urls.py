@@ -17,10 +17,11 @@ from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 from django.contrib import admin
 from django.urls import path
+from db.views import generate_pdf
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('generate-pdf', views.generate_pdf, name='generate-pdf')
+    path('generate-pdf', generate_pdf, name='generate-pdf')
 ]
 
 

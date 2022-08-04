@@ -5,7 +5,7 @@ from .models import Academic_Record, Institute, Student
 
 def UploadPDF(url=None, subject=None, semester=None, batch=None, institute_id=None):
     if url == None or subject == None or semester == None or batch == None or institute_id == None:
-        return False
+        return 'Error'
     df = pd.read_csv(url)
     print(df)
     # Add try catch
@@ -23,7 +23,7 @@ def UploadPDF(url=None, subject=None, semester=None, batch=None, institute_id=No
             obj.save()
         except:
             continue
-    return True
+    return 'Done'
 
 
 # UploadPDF(url='https://firebasestorage.googleapis.com/v0/b/stately-pulsar-343510.appspot.com/o/static%2Ftest.csv?alt=media&token=25adb90b-5266-4304-89a8-66c501c9733a', subject='Data Science')

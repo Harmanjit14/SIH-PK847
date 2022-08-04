@@ -14,7 +14,7 @@ def generate_pdf(request):
     c= canvas.Canvas(buf, pagesize=letter, bottomup=0)
     textob = c.beginText()
     textob.setTextOrigin(inch,inch)
-    textob.setFont("Halvetica",14)
+    # textob.setFont("Halvetica",14)
     #add somelines
     lines=[]
     records=Academic_Record.objects.all()
