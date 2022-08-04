@@ -11,15 +11,11 @@ def UploadPDF(url=None, subject=None, semester=None, batch=None, institute_id=No
     # Add try catch
     institute = Institute.objects.get(id=institute_id)
 
-    # df = df.dropna()
-    # df = df.drop_duplicates('Roll')
-
     for i, row in df.iterrows():
         try:
-            print(row)
             student = Student.objects.get(roll=row.Roll)
             obj = Academic_Record.objects.create(
-                semester=semester, institute=institute, student=student, grade=row.Grade, marks=row.Marks, subject=subject)
+                semester=semester, institute=institute, student=student, grade=row.Grade, marks=row.Marks, subject=subject, batch=batch)
             obj.save()
         except:
             continue

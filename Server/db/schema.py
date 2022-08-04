@@ -22,25 +22,10 @@ class InstituteType(DjangoObjectType):
 class Query(graphene.ObjectType):
 
     all_institutes = graphene.List(InstituteType)
-    upload_csv = graphene.String(url=graphene.String(required=True),
-                                 subject=graphene.String(required=True),
-                                 semester=graphene.Int(required=True),
-                                 batch=graphene.Int(required=True),
-                                 institute_id=graphene.String(required=True))
 
     def resolve_all_institutes(self, info):
         ins = Institute.objects.all()
         return ins
-
-    def resolve_upload_csv(self, info, url, subject, semester, batch, institute_id):
-        # user = info.context.user
-
-        # if user.is_anonymous:
-        #     raise GraphQLError("Not Logged In!")
-        # ret = 'Done'
-        ret = UploadPDF(url=url, subject=subject, semester=semester,
-                        batch=batch, institute_id=institute_id)
-        return ret
 
 
 class CreateUser(graphene.Mutation):
@@ -93,13 +78,15 @@ class UploadCSV(graphene.Mutation):
         institute_id = graphene.String(required=True)
 
     def mutate(self, info, url, subject, semester, batch, institute_id):
-        # user = info.context.user
+        user = info.context.user
 
-        # if user.is_anonymous:
-        #     raise GraphQLError("Not Logged In!")
-        ret = 'Done'
-        # ret = UploadPDF(url=url, subject=subject, semester=semester,
-        # batch=batch, institute_id=institute_id)
+        if user.is_anonymous:
+            raise GraphQLError("Not Logged In!")
+        if Academic_Record.objects.filter(semester=semester).filter(
+                subject=subject).filter(institute__id=institute_id).filter(batch=batch).exists():
+            raise GraphQLError('Data for similar fields already exists')
+        ret = UploadPDF(url=url, subject=subject, semester=semester,
+                        batch=batch, institute_id=institute_id)
         return UploadCSV(success=ret)
 
 
