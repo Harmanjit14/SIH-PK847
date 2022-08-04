@@ -13,9 +13,11 @@ class UserType(DjangoObjectType):
     class Meta:
         model = User
 
+
 class InstituteType(DjangoObjectType):
     class Meta:
         model = Institute
+
 
 class Query(graphene.ObjectType):
 
@@ -66,7 +68,7 @@ class DeleteUser(graphene.Mutation):
 
 class UploadCSV(graphene.Mutation):
 
-    success = graphene.Boolean()
+    success = graphene.String()
 
     class Arguments:
         url = graphene.String(required=True)
@@ -76,11 +78,13 @@ class UploadCSV(graphene.Mutation):
         institute_id = graphene.String(required=True)
 
     def mutate(self, info, url, subject, semester, batch, institute_id):
-        # user = info.context.user
+        user = info.context.user
 
-        # if user.is_anonymous:
-        #     raise GraphQLError("Not Logged In!")
-
+        if user.is_anonymous:
+            raise GraphQLError("Not Logged In!")
+        if Academic_Record.objects.filter(semester=semester).filter(
+                subject=subject).filter(institute__id=institute_id).filter(batch=batch).exists():
+            raise GraphQLError('Data for similar fields already exists')
         ret = UploadPDF(url=url, subject=subject, semester=semester,
                         batch=batch, institute_id=institute_id)
         return UploadCSV(success=ret)

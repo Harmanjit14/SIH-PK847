@@ -57,6 +57,7 @@ class Academic_Record(models.Model):
         blank=False, null=False, editable=True, max_length=255)
     grade = models.CharField(blank=False, null=False,
                              editable=True, max_length=2)
+    batch = models.IntegerField()
     marks = models.IntegerField(null=True, validators=[MinValueValidator(0)])
 
     def __str__(self):

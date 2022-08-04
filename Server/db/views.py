@@ -8,6 +8,7 @@ from .models import Academic_Record
 
 
 
+<<<<<<< HEAD
 # # Create your views here.
 # def generate_pdf(request):
 #     buf=io.BytesIO()
@@ -52,6 +53,17 @@ def generate_pdf(pk):
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)
     p.setFont('Helvetica', 10)
+=======
+# Create your views here.
+def generate_pdf(request):
+    buf=io.BytesIO()
+    c= canvas.Canvas(buf, pagesize=letter, bottomup=0)
+    textob = c.beginText()
+    textob.setTextOrigin(inch,inch)
+    # textob.setFont("Halvetica",14)
+    #add somelines
+    lines=[]
+>>>>>>> 048447c324303eed5b03bcd6aba9bf04cb553522
     records=Academic_Record.objects.all()
 
     for record in records:
