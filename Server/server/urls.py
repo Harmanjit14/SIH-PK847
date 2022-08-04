@@ -21,7 +21,6 @@ from db.views import certificate
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('generate-pdf', generate_pdf, name='generate-pdf')
     path('certificate',certificate,name="c")
 ]
 
