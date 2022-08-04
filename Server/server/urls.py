@@ -21,7 +21,11 @@ from db.views import generate_pdf
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+<<<<<<< HEAD
+    #path('generate-pdf', views.generate_pdf, name='generate-pdf')
+=======
     path('generate-pdf', generate_pdf, name='generate-pdf')
+>>>>>>> 048447c324303eed5b03bcd6aba9bf04cb553522
 ]
 
 
