@@ -176,4 +176,4 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'fridaynight.SIH@gmail.com'
-EMAIL_HOST_PASSWORD = 'Temp@12345'
+EMAIL_HOST_PASSWORD = 'lyuwfetgclawptoi'
