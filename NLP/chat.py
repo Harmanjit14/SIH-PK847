@@ -1,8 +1,7 @@
 import random
 import json
-
+import time
 import torch
-
 from model import NeuralNet
 from utils import bag_of_words, token
 
@@ -51,3 +50,5 @@ while True:
                 print(f"{bot_name}: {random.choice(intent['responses'])}")
     else:
         print(f"{bot_name}: I do not understand...")
+        
+time.sleep(0.1)    
