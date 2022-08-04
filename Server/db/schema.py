@@ -7,6 +7,7 @@ from db.utils import UploadPDF
 from .models import *
 from graphql import GraphQLError
 from django.db.models import Q
+from server.settings import EMAIL_HOST_USER
 
 
 class UserType(DjangoObjectType):
@@ -28,13 +29,13 @@ class Query(graphene.ObjectType):
         ins = Institute.objects.all()
         return ins
 
-    def resolve_send_mail():
+    def resolve_send_mail(self, info):
 
         try:
             send_mail(
                 'Subject here',
                 'Here is the message.',
-                'harmanjit140500@gmail.com',
+                EMAIL_HOST_USER,
                 ['harmanjit140500@gmail.com', 'manroopparmar120@gmail.com'],
                 fail_silently=False,
             )
