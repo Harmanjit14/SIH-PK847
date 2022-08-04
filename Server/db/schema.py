@@ -2,11 +2,12 @@
 import graphene
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
-
+from django.core.mail import send_mail
 from db.utils import UploadPDF
 from .models import *
 from graphql import GraphQLError
 from django.db.models import Q
+from server.settings import EMAIL_HOST_USER
 
 
 class UserType(DjangoObjectType):
@@ -22,10 +23,26 @@ class InstituteType(DjangoObjectType):
 class Query(graphene.ObjectType):
 
     all_institutes = graphene.List(InstituteType)
+    send_mail = graphene.String()
 
     def resolve_all_institutes(self, info):
         ins = Institute.objects.all()
         return ins
+
+    def resolve_send_mail(self, info):
+
+        try:
+            send_mail(
+                'Subject here',
+                'Here is the message.',
+                EMAIL_HOST_USER,
+                ['harmanjit140500@gmail.com', 'manroopparmar120@gmail.com'],
+                fail_silently=False,
+            )
+        except:
+            return 'Fail'
+
+        return 'Success'
 
 
 class CreateUser(graphene.Mutation):
