@@ -17,9 +17,11 @@ from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 from django.contrib import admin
 from django.urls import path
+from db.views import certificate
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('certificate',certificate,name="c")
 ]
 
 
