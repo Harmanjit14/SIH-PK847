@@ -4,48 +4,61 @@
   <head>
     <meta charset="UTF-8" />
     <title>Mail Check</title>
-    <link rel="stylesheet" href={% static 'certificate.css' %} />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static '/certificate.css' %}"
+    />
   </head>
   <body>
     <div class="main-container">
-      <div class="sub-container">
-        <div class="institute">
-          <h2>Thapar University</h2>
+      <div class="institute">
+        <h2>Thapar University</h2>
+      </div>
+      <div class="student-info">
+        <div class="student-name">
+          <h4>Name: Harman Singh</h4>
         </div>
-        <div class="student-info">
-          <div class="student-name">
-            <h4>Harman</h4>
-          </div>
-          <div class="student-id">
-            <h4>1019072839892</h4>
-          </div>
+        <div class="student-id">
+          <h4>Registeration No.: 1019072839892</h4>
         </div>
-        <table>
-          <tr>
-            <th>S.No.</th>
-            <th>Course No.</th>
-            <th>Course Name</th>
-            <th>Credits</th>
-            <th>Grade</th>
-          </tr>
-          <tr>
-            <td><span className="table-id">1</span></td>
+      </div>
+      <table>
+        <tr>
+          <th>S.No.</th>
+          <th>Course No.</th>
+          <th>Course Name</th>
+          <th>Credits</th>
+          <th>Grade</th>
+        </tr>
+        <tr>
+          <td><span className="table-id">1</span></td>
 
-            <td><span className="table-course-num">UCS310</span></td>
+          <td><span className="table-course-num">UCS310</span></td>
 
-            <td><span className="table-course-name">Machine Learning</span></td>
+          <td><span className="table-course-name">Machine Learning</span></td>
 
-            <td><span className="table-credits">4.5</span></td>
+          <td><span className="table-credits">4.5</span></td>
 
-            <td><span className="table-grade">B</span></td>
-          </tr>
-        </table>
-        <div class="info">
-          <div class="cgpa"><h6>SGPA: 10</h6></div>
-          <div class="sgpa"><h6>CGPA: 10</h6></div>
-          <div class="place"><h6>PLACE: Patiala</h6></div>
-          <div class="date"><h6>DATED: 08-09-2020</h6></div>
-        </div>
+          <td><span className="table-grade">B</span></td>
+        </tr>
+        <tr>
+          <td><span className="table-id">2</span></td>
+
+          <td><span className="table-course-num">UCS316</span></td>
+
+          <td><span className="table-course-name">Data Structures</span></td>
+
+          <td><span className="table-credits">4</span></td>
+
+          <td><span className="table-grade">A</span></td>
+        </tr>
+      </table>
+      <div class="info">
+        <div class="cgpa"><h6>SGPA: 10</h6></div>
+        <div class="sgpa"><h6>CGPA: 10</h6></div>
+        <div class="place"><h6>PLACE: Patiala</h6></div>
+        <div class="date"><h6>DATED: 08-09-2020</h6></div>
       </div>
     </div>
   </body>

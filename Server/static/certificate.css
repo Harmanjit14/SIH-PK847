@@ -1,46 +1,34 @@
 .main-container {
   display: flex;
+  flex-direction: column;
   margin: 10px;
-}
-
-h2 {
-  font-size: 30px;
-  color: black;
-}
-
-h4 {
-  font-size: 25px;
-  color: black;
-}
-
-h6 {
-  font-size: 20px;
-  color: black;
-}
-
-.sub-container {
   align-items: center;
+  border: 2px solid black;
+  width: 70%;
+  margin-left: 200px;
+}
+
+.institute {
+  text-align: center;
 }
 
 .student-info {
+  display: flex;
   flex-direction: row;
 }
 
 .student-name {
-  align-self: flex-start;
-}
-
-.student-id {
-  align-self: flex-end;
+  margin-right: 250px;
 }
 
 .info {
+  display: flex;
   flex-direction: column;
 }
 
 table {
   border-collapse: collapse;
-  width: 80%;
+  width: 70%;
 }
 
 th,
@@ -51,4 +39,36 @@ td {
 
 tr:nth-child(even) {
   background-color: #f2f2f2;
+}
+
+.institute > h2 {
+  font-size: 30px;
+  color: black;
+}
+
+.student-name > h4,
+.student-id > h4 {
+  font-size: 25px;
+  color: black;
+}
+
+.info {
+  margin: 20px auto;
+}
+
+.sgpa,
+.cgpa,
+.place,
+.date {
+  text-align: left;
+  margin-right: 500px;
+}
+
+.cgpa > h6,
+.sgpa > h6,
+.place > h6,
+.date > h6 {
+  font-size: 20px;
+  color: black;
+  margin: 10px auto;
 }
