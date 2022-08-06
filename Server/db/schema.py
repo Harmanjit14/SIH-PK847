@@ -7,7 +7,9 @@ from db.utils import UploadPDF
 from .models import *
 from graphql import GraphQLError
 from django.db.models import Q
-from server.settings import EMAIL_HOST_USER
+from server.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_HOST, EMAIL_BACKEND
+from django.core.mail import EmailMessage
+from .utils import render_to_pdf
 
 
 class UserType(DjangoObjectType):
@@ -32,15 +34,16 @@ class Query(graphene.ObjectType):
     def resolve_send_mail(self, info):
 
         try:
-            send_mail(
-                'Subject here',
-                'Here is the message.',
-                EMAIL_HOST_USER,
-                ['harmanjit140500@gmail.com', 'manroopparmar120@gmail.com'],
-                fail_silently=False,
-            )
-        except:
-            return 'Fail'
+            resp = render_to_pdf('certificate.html', {})
+            print(resp)
+
+            mail = EmailMessage("Certificate", "Message goes here", EMAIL_HOST_USER, [
+                                'harmanjit140500@gmail.com', 'manroopparmar120@gmail.com'])
+            mail.attach_file('certificate.pdf')
+            mail.send()
+        except Exception as e:
+            print(e)
+            return str(e)
 
         return 'Success'
 

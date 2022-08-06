@@ -1,5 +1,7 @@
 from django.shortcuts import render
 # # from django.http import FileResponse
+from django.http import HttpResponse
+from .utils import render_to_pdf
 # # import io
 # # from reportlab.pdfgen import canvas
 # # from reportlab.lib.units import inch
@@ -7,7 +9,8 @@ from django.shortcuts import render
 # from .models import Academic_Record
 
 def certificate(request):
-    return render(request,'certificate.html',context={})
+    pdf = render_to_pdf('certificate.html', {})
+    return HttpResponse(pdf, content_type='application/pdf')
 
 # # Create your views here.
 # def generate_pdf(request):

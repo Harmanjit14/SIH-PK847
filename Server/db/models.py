@@ -1,8 +1,10 @@
 
+from pyexpat import model
 from django.core.validators import MinValueValidator
 from uuid import uuid4
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -31,7 +33,7 @@ class Student(models.Model):
     }
 
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
-    roll = models.IntegerField()
+    roll = models.IntegerField(unique=True)
     name = models.CharField(max_length=255, blank=False, null=False)
     email = models.EmailField(unique=True)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
@@ -40,8 +42,10 @@ class Student(models.Model):
     graduating_year = models.IntegerField()
     degree = models.CharField(choices=degree_choices,
                               max_length=255, default='BE')
-    address = models.CharField(max_length=255)
+    address = models.CharField(max_length=255,blank=True)
     wallet = models.IntegerField(validators=[MinValueValidator(0)])
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    batch = models.CharField(blank=True,max_length=255)
 
     def __str__(self):
         return f'{self.institute.name} {self.roll}'
@@ -51,14 +55,23 @@ class Academic_Record(models.Model):
     id = models.UUIDField(default=uuid4,
                           editable=False, primary_key=True)
     semester = models.IntegerField()
-    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     subject = models.CharField(
         blank=False, null=False, editable=True, max_length=255)
     grade = models.CharField(blank=False, null=False,
                              editable=True, max_length=2)
-    batch = models.IntegerField()
     marks = models.IntegerField(null=True, validators=[MinValueValidator(0)])
 
     def __str__(self):
-        return f'{self.id} {self.institute.name}'
+        return f'{self.id} {self.student.institute.name}'
+
+class Academic_Record_File(models.Model):
+
+    id = models.UUIDField(default=uuid4, editable=False, primary_key=True)
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    semester = models.IntegerField()
+    url = models.URLField()
+
+    def __str__(self):
+        return self.id
+    
