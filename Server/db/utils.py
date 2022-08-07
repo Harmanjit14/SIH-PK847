@@ -53,7 +53,10 @@ def get_semester_certifcate_context(student, semester):
     context['name'] = student.name
     context['roll'] = student.roll
     context['institute'] = student.institute.name
+    context['logo'] = student.institute.logo
+    context['signature'] = student.institute.signature
     context['dob'] = str(student.dob)
+    context['sem'] = str(semester)
     context['degree'] = list(degree_choices)[int(student.degree)][1]
     for r in rec:
         data = {

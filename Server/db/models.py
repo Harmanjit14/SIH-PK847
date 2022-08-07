@@ -56,6 +56,7 @@ class Academic_Record(models.Model):
     grade = models.CharField(blank=False, null=False,
                              editable=True, max_length=2)
     marks = models.IntegerField(null=True, validators=[MinValueValidator(0)])
+    credits = models.FloatField(default=0,null=False, blank=False)
 
     def __str__(self):
         return f'{self.id} {self.student.institute.name}'

@@ -11,37 +11,48 @@
         margin: 10px;
       }
 
+      .logo1 {
+        margin: 0;
+        padding: 0;
+        text-align: right;
+      }
+
+      .logo1 > img {
+        height: 100px;
+        width: 150px;
+      }
+
       .institute {
         text-align: center;
+        margin-top: 0;
+      }
+
+      .student-course {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        margin-bottom: 5px;
       }
 
       .student-info {
         display: flex;
-        flex-direction: row !important;
-        text-align: center;
+        flex-direction: row;
       }
 
-      /* .student-name {
-        margin-left: 20px;
+      .student-name {
+        /* margin-left: 20px; */
+        display: flex;
         flex-direction: column;
+        text-align: left;
+        /* width: 100px; */
       }
 
       .student-id {
-        margin-right: 20px;
-        flex-direction: column;
-      } */
-
-      .info {
+        /* margin-right: 20px; */
         display: flex;
         flex-direction: column;
-      }
-
-      .sgpa,
-      .cgpa,
-      .place,
-      .date {
-        text-align: left;
-        margin-left: 50px;
+        text-align: right;
+        /* width: 100px; */
       }
 
       #students {
@@ -75,24 +86,48 @@
         background-color: #ddd;
       } */
 
-      .institute > h2 {
-        font-size: 30px;
+      .info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sgpa,
+      .cgpa,
+      .place,
+      .date {
+        text-align: left;
+        margin-left: 50px;
+      }
+
+      .sign {
+        text-align: right;
+        margin-right: 50px;
+      }
+
+      .sign > img {
+        height: 100px;
+        width: 150px;
+      }
+      .des {
+        text-align: right;
+        margin-right: 75px;
+      }
+
+      h2 {
+        font-size: 25px;
         color: black;
         font-weight: 500;
         font-family: Arial, Helvetica, sans-serif;
       }
 
-      .student-info > h4 {
-        font-size: 20px;
+      h5 {
+        font-size: 16px;
         color: black;
         font-weight: 400;
         font-family: Arial, Helvetica, sans-serif;
       }
 
-      .cgpa > h6,
-      .sgpa > h6,
-      .place > h6,
-      .date > h6 {
+      h6 {
         font-size: 15px;
         color: black;
         font-weight: 400;
@@ -102,16 +137,26 @@
   </head>
   <body>
     <div class="main-container">
+      <div class="logo1">
+        <img src="{{ logo|safe }}" alt="logo" />
+      </div>
       <div class="institute">
         <h2>{{ institute|safe }}</h2>
       </div>
+      <div class="student-course">
+        <h5>{{ degree|safe }}</h5>
+        <h5>Semester: {{ sem|safe }}</h5>
+      </div>
       <div class="student-info">
-        <!-- <div class="student-name"> -->
-        <h4>Name: {{ name|safe }}</h4>
-        <!-- </div>
-        <div class="student-id"> -->
-        <h4>Registration No.: {{ roll|safe }}</h4>
-        <!-- </div> -->
+        <div class="student-name">
+          <h5>Name: {{ name|safe }}</h5>
+          <h5>Mothers Name: Rupinder Kaur</h5>
+          <h5>Fathers Name: Mandeep Singh Parmar</h5>
+        </div>
+        <div class="student-id">
+          <h5>Registration No.: {{ roll|safe }}</h5>
+          <h5>Date Of Birth: {{ dob|safe }}</h5>
+        </div>
       </div>
       <table id="students">
         <tr>
@@ -122,41 +167,43 @@
           <th>Grade</th>
         </tr>
         {% for rec in records %}
-          <tr>
-            <td>
-              <span className="table-id">{{ forloop.counter|safe }}</span>
-            </td>
-            <td>
-              <span className="table-course-num">{{ rec.code|safe }}</span>
-            </td>
-            <td>
-              <span className="table-course-name">{{ rec.subject|safe }}</span>
-            </td>
-            <td>
-              <span className="table-credits">{{ rec.marks|safe }}</span>
-            </td>
-            <td>
-              <span className="table-grade">{{ rec.grade|safe }}</span>
-            </td>
-          </tr>
+        <tr>
+          <td>
+            <span className="table-id">{{ forloop.counter|safe }}</span>
+          </td>
+          <td>
+            <span className="table-course-num">{{ rec.code|safe }}</span>
+          </td>
+          <td>
+            <span className="table-course-name">{{ rec.subject|safe }}</span>
+          </td>
+          <td>
+            <span className="table-credits">{{ rec.marks|safe }}</span>
+          </td>
+          <td>
+            <span className="table-grade">{{ rec.grade|safe }}</span>
+          </td>
+        </tr>
         {% endfor %}
       </table>
       <div class="info">
         <div class="cgpa">
-          <h6>SGPA: 10</h6>
+          <h6>Semester Grade Point Average (SGPA): 10</h6>
         </div>
         <div class="sgpa">
-          <h6>CGPA: 10</h6>
+          <h6>Cummulative Grade Point Average (CGPA): 10</h6>
         </div>
         <div class="place">
-          <h6>
-            PLACE: Patiala
-          </h6>
+          <h6>PLACE: Patiala</h6>
         </div>
         <div class="date">
-          <h6>
-            DATED: 08-09-2020
-          </h6>
+          <h6>DATED: 08-09-2020</h6>
+        </div>
+        <div class="sign">
+          <img src="{{ signature|safe }}" alt="sign" />
+        </div>
+        <div class="des">
+          <h6>Designation</h6>
         </div>
       </div>
     </div>
