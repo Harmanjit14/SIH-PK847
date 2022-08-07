@@ -43,7 +43,7 @@ def render_to_pdf(template_src, location, context):
     return False
 
 
-def get_semester_certifcate_context(student, semester):
+def get_semester_certifcate_context(student, semester, credits):
     context = {
         'error': False,
     }
@@ -57,6 +57,7 @@ def get_semester_certifcate_context(student, semester):
     context['signature'] = student.institute.signature
     context['dob'] = str(student.dob)
     context['sem'] = str(semester)
+    context['cre'] = str(credits)
     context['degree'] = list(degree_choices)[int(student.degree)][1]
     for r in rec:
         data = {
