@@ -1,27 +1,123 @@
-{% load static %}
+<!-- {% load static %} -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Mail Check</title>
-    <link rel="stylesheet"
-          type="text/css"
-          href="{% static '/certificate.css' %}"/>
+    <style>
+      .main-container {
+        display: flex;
+        margin: 10px;
+      }
+
+      .institute {
+        text-align: center;
+      }
+
+      .student-info {
+        display: flex;
+        flex-direction: row !important;
+        text-align: center;
+      }
+
+      /* .student-name {
+        margin-left: 20px;
+        flex-direction: column;
+      }
+
+      .student-id {
+        margin-right: 20px;
+        flex-direction: column;
+      } */
+
+      .info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sgpa,
+      .cgpa,
+      .place,
+      .date {
+        text-align: left;
+        margin-left: 50px;
+      }
+
+      #students {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 80%;
+        font-size: 14px;
+        margin-top: 15px;
+        margin-bottom: 30px;
+      }
+
+      #students th {
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #ddd;
+        background-color: whitesmoke;
+        color: black;
+      }
+
+      #students td {
+        text-align: center;
+        border: 1px solid #ddd;
+        padding: 5px;
+      }
+
+      /* #students tr:nth-child(odd) {
+        background-color: whitesmoke;
+      }
+
+      #students tr:hover {
+        background-color: #ddd;
+      } */
+
+      .institute > h2 {
+        font-size: 30px;
+        color: black;
+        font-weight: 500;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .student-info > h4 {
+        font-size: 20px;
+        color: black;
+        font-weight: 400;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .cgpa > h6,
+      .sgpa > h6,
+      .place > h6,
+      .date > h6 {
+        font-size: 15px;
+        color: black;
+        font-weight: 400;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+    </style>
+    <!-- <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static '/certificate.css' %}"
+    /> -->
   </head>
   <body>
     <div class="main-container">
       <div class="institute">
         <h2>Thapar University</h2>
       </div>
-      <div class="student-info">
-        <div class="student-name">
-          <h4>Name: Harman Singh</h4>
-        </div>
-        <div class="student-id">
-          <h4>Registeration No.: 1019072839892</h4>
-        </div>
+      <div class="student-info" style="flex-direction: row !important">
+        <!-- <div class="student-name"> -->
+        <h4>Name: Harman Singh</h4>
+        <!-- </div>
+        <div class="student-id"> -->
+        <h4>Registration No.: 1019072839892</h4>
+        <!-- </div> -->
       </div>
-      <table>
+      <table id="students">
         <tr>
           <th>S.No.</th>
           <th>Course No.</th>
@@ -44,6 +140,23 @@
           </td>
           <td>
             <span className="table-grade">B</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span className="table-id">2</span>
+          </td>
+          <td>
+            <span className="table-course-num">UCS316</span>
+          </td>
+          <td>
+            <span className="table-course-name">Data Structures</span>
+          </td>
+          <td>
+            <span className="table-credits">4</span>
+          </td>
+          <td>
+            <span className="table-grade">A</span>
           </td>
         </tr>
         <tr>
