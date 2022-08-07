@@ -1,40 +1,26 @@
 from django.shortcuts import render
-# # from django.http import FileResponse
-from django.http import HttpResponse
-from .utils import render_to_pdf
-# # import io
-# # from reportlab.pdfgen import canvas
-# # from reportlab.lib.units import inch
-# # from reportlab.lib.pagesizes import letter
-# from .models import Academic_Record
+from .degree_data import degree_choices
+from .models import Academic_Record, Student
 
 def certificate(request):
-    pdf = render_to_pdf('certificate.html', {})
-    return HttpResponse(pdf, content_type='application/pdf')
-
-# # Create your views here.
-# def generate_pdf(request):
-#     buf=io.BytesIO()
-#     c= canvas.Canvas(buf, pagesize=letter, bottomup=0)
-#     textob = c.beginText()
-#     textob.setTextOrigin(inch,inch)
-#     # textob.setFont("Halvetica",14)
-#     #add somelines
-#     lines=[]
-#     records=Academic_Record.objects.all()
-
-#     for record in records:
-#         lines.append(record.id)
-#         lines.append(record.semester)
-#         lines.append(record.institute)
-#         lines.append(record.student)
-#         lines.append(record.subject)
-#         lines.append(record.grade)
-#         lines.append(record.marks)
-#         lines.append("===========================")
-#    # p.drawString(220, y, "PDF generate at "+timezone.now().strftime('%Y-%b-%d'))
-#     p.showPage()
-#     p.save()
-#     pdf = buffer.getvalue()
-#     buffer.close()
-#     return pdf
+    context = {}
+    s = Student.objects.get(roll=101903287)
+    rec = Academic_Record.objects.filter(student=s).filter(semester=3)
+    l = []
+    context['name'] = s.name
+    context['roll'] = s.roll
+    context['institute'] = s.institute.name
+    context['dob'] = str(s.dob)
+    context['degree'] = list(degree_choices)[int(s.degree)][1]
+    context['dob'] = str(s.dob)
+    for r in rec:
+        data = {
+            'subject': r.subject,
+            'marks': r.marks,
+            'code':r.subject_code,
+            'grade':r.grade,
+        }
+        l.append(data)
+    context['records'] = l
+    print(context)
+    return render(request, 'certificate.html', context=context)

@@ -3,6 +3,7 @@ from xhtml2pdf import pisa
 from django.template.loader import get_template
 import pandas as pd
 from .models import Academic_Record, Institute, Student
+from .degree_data import degree_choices
 
 
 def UploadPDF(url=None, subject=None, semester=None, batch=None, institute_id=None):
@@ -24,18 +25,44 @@ def UploadPDF(url=None, subject=None, semester=None, batch=None, institute_id=No
     return 'Done'
 
 
-def render_to_pdf(template_src, context_dict={}):
+def render_to_pdf(template_src, location, context):
     template = get_template(template_src)
-    html = template.render(context_dict)
+    html = template.render(context)
     result = BytesIO()
     pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
-    filename = 'certificate'
+
     try:
-        with open(f'{filename}.pdf', 'wb+') as output:
+        with open(location, 'wb+') as output:
             pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), output)
     except Exception as e:
         print(e)
+        return False
 
     if not pdf.err:
         return True
     return False
+
+
+def get_semester_certifcate_context(student, semester):
+    context = {
+        'error': False,
+    }
+    rec = Academic_Record.objects.filter(
+        student=student).filter(semester=semester)
+    l = []
+    context['name'] = student.name
+    context['roll'] = student.roll
+    context['institute'] = student.institute.name
+    context['dob'] = str(student.dob)
+    context['degree'] = list(degree_choices)[int(student.degree)][1]
+    context['dob'] = str(student.dob)
+    for r in rec:
+        data = {
+            'subject': r.subject,
+            'marks': r.marks,
+            'code': r.subject_code,
+            'grade': r.grade,
+        }
+        l.append(data)
+    context['records'] = l
+    return context

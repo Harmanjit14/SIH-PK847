@@ -2,14 +2,14 @@
 import graphene
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
-from django.core.mail import send_mail
+import os
 from db.utils import UploadPDF
 from .models import *
 from graphql import GraphQLError
 from django.db.models import Q
-from server.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_HOST, EMAIL_BACKEND
+from server.settings import EMAIL_HOST_USER
 from django.core.mail import EmailMessage
-from .utils import render_to_pdf
+from .utils import get_semester_certifcate_context, render_to_pdf
 
 
 class UserType(DjangoObjectType):
@@ -25,25 +25,50 @@ class InstituteType(DjangoObjectType):
 class Query(graphene.ObjectType):
 
     all_institutes = graphene.List(InstituteType)
-    send_mail = graphene.String()
+    semester_certificate = graphene.String(sem=graphene.Int(required=True))
 
     def resolve_all_institutes(self, info):
+        usr = info.context.user
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
         ins = Institute.objects.all()
         return ins
 
-    def resolve_send_mail(self, info):
+    def resolve_semester_certificate(self, info, sem):
 
+        usr = info.context.user
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        student = Student.objects.get(user=usr)
+
+        if student == None:
+            raise GraphQLError('Not valid Student')
+
+        location = f'static/files/{student.id}sem_{sem}.pdf'
         try:
-            resp = render_to_pdf('certificate.html', {})
-            print(resp)
+            context = get_semester_certifcate_context(
+                student=student, semester=sem)
 
-            mail = EmailMessage("Certificate", "Message goes here", EMAIL_HOST_USER, [
-                                'harmanjit140500@gmail.com', 'manroopparmar120@gmail.com'])
-            mail.attach_file('certificate.pdf')
+            if context['error'] == True:
+                raise GraphQLError('Semester data does not exist')
+
+            resp = render_to_pdf('certificate.html', location, context)
+            if not resp:
+                raise GraphQLError('failed to create certificate')
+
+            mail = EmailMessage(f"Certificate SEM: {sem}",
+                                "Here is your ceritificate",
+                                EMAIL_HOST_USER,
+                                [student.email])
+            mail.attach_file(location)
             mail.send()
+            os.remove(location)
         except Exception as e:
+            # raise GraphQLError(str(e))
             print(e)
-            return str(e)
+            return 'Fail'
 
         return 'Success'
 

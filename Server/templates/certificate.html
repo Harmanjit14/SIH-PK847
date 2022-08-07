@@ -11,14 +11,14 @@
   <body>
     <div class="main-container">
       <div class="institute">
-        <h2>Thapar University</h2>
+        <h2>{{ institute|safe }}</h2>
       </div>
       <div class="student-info">
         <div class="student-name">
-          <h4>Name: Harman Singh</h4>
+          <h4>Name: {{ name|safe }}</h4>
         </div>
         <div class="student-id">
-          <h4>Registeration No.: 1019072839892</h4>
+          <h4>Registeration No.: {{ roll|safe }}</h4>
         </div>
       </div>
       <table>
@@ -26,43 +26,28 @@
           <th>S.No.</th>
           <th>Course No.</th>
           <th>Course Name</th>
-          <th>Credits</th>
+          <th>Marks</th>
           <th>Grade</th>
         </tr>
-        <tr>
-          <td>
-            <span className="table-id">1</span>
-          </td>
-          <td>
-            <span className="table-course-num">UCS310</span>
-          </td>
-          <td>
-            <span className="table-course-name">Machine Learning</span>
-          </td>
-          <td>
-            <span className="table-credits">4.5</span>
-          </td>
-          <td>
-            <span className="table-grade">B</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span className="table-id">2</span>
-          </td>
-          <td>
-            <span className="table-course-num">UCS316</span>
-          </td>
-          <td>
-            <span className="table-course-name">Data Structures</span>
-          </td>
-          <td>
-            <span className="table-credits">4</span>
-          </td>
-          <td>
-            <span className="table-grade">A</span>
-          </td>
-        </tr>
+        {% for rec in records %}
+          <tr>
+            <td>
+              <span className="table-id">{{ forloop.counter|safe }}</span>
+            </td>
+            <td>
+              <span className="table-course-num">{{ rec.code|safe }}</span>
+            </td>
+            <td>
+              <span className="table-course-name">{{ rec.subject|safe }}</span>
+            </td>
+            <td>
+              <span className="table-credits">{{ rec.marks|safe }}</span>
+            </td>
+            <td>
+              <span className="table-grade">{{ rec.grade|safe }}</span>
+            </td>
+          </tr>
+        {% endfor %}
       </table>
       <div class="info">
         <div class="cgpa">
