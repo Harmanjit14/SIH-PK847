@@ -142,8 +142,8 @@
       <div class="student-info">
         <div class="student-name">
           <h5>Name: {{ name|safe }}</h5>
-          <h5>Mothers Name: Rupinder Kaur</h5>
-          <h5>Fathers Name: Mandeep Singh Parmar</h5>
+          <h5>Mothers Name: {{ mname|safe }}</h5>
+          <h5>Fathers Name: {{ fname|safe }}</h5>
         </div>
         <div class="student-id">
           <h5>Registration No.: {{ roll|safe }}</h5>
@@ -155,36 +155,40 @@
           <th>S.No.</th>
           <th>Course No.</th>
           <th>Course Name</th>
+          <th>Course Credits</th>
           <th>Marks</th>
           <th>Grade</th>
         </tr>
         {% for rec in records %}
         <tr>
           <td>
-            <span className="table-id">{{ forloop.counter|safe }}</span>
+            <span>{{ forloop.counter|safe }}</span>
           </td>
           <td>
-            <span className="table-course-num">{{ rec.code|safe }}</span>
+            <span>{{ rec.code|safe }}</span>
           </td>
           <td>
-            <span className="table-course-name">{{ rec.subject|safe }}</span>
+            <span>{{ rec.subject|safe }}</span>
           </td>
           <td>
-            <span className="table-credits">{{ rec.marks|safe }}</span>
+            <span>{{ rec.cre|safe }}</span>
           </td>
           <td>
-            <span className="table-grade">{{ rec.grade|safe }}</span>
+            <span>{{ rec.marks|safe }}</span>
+          </td>
+          <td>
+            <span>{{ rec.grade|safe }}</span>
           </td>
         </tr>
         {% endfor %}
       </table>
       <div class="info">
         <div class="cgpa">
-          <h6>Semester Grade Point Average (SGPA): 10</h6>
+          <h6>Semester Grade Point Average (SGPA): {{ sg|safe }}</h6>
         </div>
-        <div class="sgpa">
+        <!-- <div class="sgpa">
           <h6>Cummulative Grade Point Average (CGPA): 10</h6>
-        </div>
+        </div> -->
         <div class="place">
           <h6>PLACE: Patiala</h6>
         </div>
