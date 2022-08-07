@@ -55,7 +55,6 @@ def get_semester_certifcate_context(student, semester):
     context['institute'] = student.institute.name
     context['dob'] = str(student.dob)
     context['degree'] = list(degree_choices)[int(student.degree)][1]
-    context['dob'] = str(student.dob)
     for r in rec:
         data = {
             'subject': r.subject,

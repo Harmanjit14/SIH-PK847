@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 .pyc
+migrations/
 # C extensions
 .cpython-310.pyc
 # Distribution / packaging

@@ -1,12 +1,104 @@
-{% load static %}
+<!-- {% load static %} -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Mail Check</title>
-    <link rel="stylesheet"
-          type="text/css"
-          href="{% static '/certificate.css' %}"/>
+    <style>
+      .main-container {
+        display: flex;
+        flex-direction: column;
+        margin: 10px;
+      }
+
+      .institute {
+        text-align: center;
+      }
+
+      .student-info {
+        display: flex;
+        flex-direction: row !important;
+        text-align: center;
+      }
+
+      /* .student-name {
+        margin-left: 20px;
+        flex-direction: column;
+      }
+
+      .student-id {
+        margin-right: 20px;
+        flex-direction: column;
+      } */
+
+      .info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sgpa,
+      .cgpa,
+      .place,
+      .date {
+        text-align: left;
+        margin-left: 50px;
+      }
+
+      #students {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 80%;
+        font-size: 14px;
+        margin-top: 15px;
+        margin-bottom: 30px;
+      }
+
+      #students th {
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #ddd;
+        background-color: whitesmoke;
+        color: black;
+      }
+
+      #students td {
+        text-align: center;
+        border: 1px solid #ddd;
+        padding: 5px;
+      }
+
+      /* #students tr:nth-child(odd) {
+        background-color: whitesmoke;
+      }
+
+      #students tr:hover {
+        background-color: #ddd;
+      } */
+
+      .institute > h2 {
+        font-size: 30px;
+        color: black;
+        font-weight: 500;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .student-info > h4 {
+        font-size: 20px;
+        color: black;
+        font-weight: 400;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .cgpa > h6,
+      .sgpa > h6,
+      .place > h6,
+      .date > h6 {
+        font-size: 15px;
+        color: black;
+        font-weight: 400;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+    </style>
   </head>
   <body>
     <div class="main-container">
@@ -14,14 +106,14 @@
         <h2>{{ institute|safe }}</h2>
       </div>
       <div class="student-info">
-        <div class="student-name">
-          <h4>Name: {{ name|safe }}</h4>
-        </div>
-        <div class="student-id">
-          <h4>Registeration No.: {{ roll|safe }}</h4>
-        </div>
+        <!-- <div class="student-name"> -->
+        <h4>Name: {{ name|safe }}</h4>
+        <!-- </div>
+        <div class="student-id"> -->
+        <h4>Registration No.: {{ roll|safe }}</h4>
+        <!-- </div> -->
       </div>
-      <table>
+      <table id="students">
         <tr>
           <th>S.No.</th>
           <th>Course No.</th>
@@ -57,10 +149,14 @@
           <h6>CGPA: 10</h6>
         </div>
         <div class="place">
-          <h6>PLACE: Patiala</h6>
+          <h6>
+            PLACE: Patiala
+          </h6>
         </div>
         <div class="date">
-          <h6>DATED: 08-09-2020</h6>
+          <h6>
+            DATED: 08-09-2020
+          </h6>
         </div>
       </div>
     </div>
