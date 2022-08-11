@@ -1,5 +1,5 @@
-from curses import nl
-from uuid import uuid4
+
+from uuid import uuid1, uuid4
 from google.cloud import texttospeech
 import random
 import json
@@ -40,7 +40,7 @@ bot_name = "Friday Night SIH"
 
 client = texttospeech.TextToSpeechClient()
 voice = texttospeech.VoiceSelectionParams(
-    language_code="pa-IN", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL)
+    language_code=language, ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL)
 
 # Select the type of audio file you want returned
 audio_config = texttospeech.AudioConfig(
@@ -97,15 +97,16 @@ while True:
                 query = r.listen(source2, timeout=3, phrase_time_limit=5)
             try:
                 text2 = r.recognize_google(query, language=language)
-                # text2 = r.recognize_google_cloud(query, language=language, credentials_json=None)
                 print(text2)
-                text2 = nlp(text)
+                # text2 = nlp(text)
                 synthesis_input = texttospeech.SynthesisInput(text=text2)
                 response_voice = client.synthesize_speech(
                     input=synthesis_input, voice=voice, audio_config=audio_config)
-                file = f'{uuid4()}.mp3'
+
+                file = r'response_file.mp3'
                 with open(file, "wb") as out:
                     out.write(response_voice.audio_content)
+
                 playsound(file)
                 time.sleep(0.5)
                 os.remove(file)
