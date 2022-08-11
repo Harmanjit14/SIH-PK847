@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from datetime import timedelta
 import dj_database_url
 from pathlib import Path
 import os
@@ -22,10 +23,10 @@ CORE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY','KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG',True)
+DEBUG = os.environ.get('DEBUG', True)
 
 ALLOWED_HOSTS = ['*']
 
@@ -70,7 +71,8 @@ GRAPHENE = {
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-    "JWT_REFRESH_EXPIRED_HANDLER": lambda orig_iat, context: False,
+    "JWT_EXPIRATION_DELTA": timedelta(days=365),  # For "Access Token"
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=365),  # For "Refresh Token"
 }
 
 AUTHENTICATION_BACKENDS = [

@@ -132,7 +132,7 @@ class Query(graphene.ObjectType):
             if not resp:
                 raise GraphQLError('failed to create certificate')
 
-            mail = EmailMessage(f"Migration Certificate",
+            mail = EmailMessage(f"Character Certificate",
                                 "Here is your ceritificate",
                                 EMAIL_HOST_USER,
                                 [student.email])
