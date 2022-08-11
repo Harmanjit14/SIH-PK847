@@ -20,10 +20,12 @@
       <br />
       <br />
       <p style="font-size: 30px">
-        This is to certify that Mr./Ms. <u>Name</u> son/daughter of
-        <u>Name</u> has passed in the descipline of <u>blank</u> in the
-        examination held in <u>blank</u> under <u>blank</u> (Registeration
-        number) as a student of <u>blank</u> (Institute name).<br />
+        This is to certify that Mr./Ms. <u>{{ name|safe }}</u> son/daughter of
+        <u>{{ mname|safe }}</u> has passed in the discipline of
+        <u>{{ degree|safe }}</u> in the examination held in
+        <u>blank????</u>
+        under <u>{{ roll|safe }}</u> (Registeration number) as a student of
+        <u>{{ institute|safe }}</u> (Institute name).<br />
         The University/College has 'No Objection' to his/her migration/admission
         to persue further studies.
       </p>

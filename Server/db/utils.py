@@ -71,6 +71,7 @@ def get_semester_certifcate_context(student, semester):
     context['dob'] = str(student.dob)
     context['sem'] = str(semester)
     context['degree'] = degree_list[int(student.degree)]
+    context['sess'] = student.session
 
     total_cre=0
     cre_grade=0
