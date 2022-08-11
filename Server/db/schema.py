@@ -9,7 +9,7 @@ from graphql import GraphQLError
 from django.db.models import Q
 from server.settings import EMAIL_HOST_USER
 from django.core.mail import EmailMessage
-from .utils import get_semester_certifcate_context, render_to_pdf
+from .utils import get_semester_certifcate_context,get_other_certifcates_context, render_to_pdf
 
 
 class UserType(DjangoObjectType):

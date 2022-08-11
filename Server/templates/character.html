@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      div {
+        padding: 100px;
+        border: 5px solid #000000;
+      }
+      h1 {
+        text-align: center;
+      }
+      p {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Character Certificate</h1>
+      <br />
+      <br />
+      <p style="font-size: 30px">
+        Certified that Mr./Ms. <u>{{ name|safe }}</u> son/daughter of
+        <u>{{ mname|safe }}</u> has been a bonafide student of
+        <u>{{ institute|safe }}</u> .He/She attended degree classes under R.no.
+        <u>{{ roll|safe }}</u> during the session
+        <u>{{ grad|safe }}</u> .His/her conduct and character recorder by the
+        college descipline committee during his/her stay in the college has been
+        satisfactory.
+      </p>
+      <br />
+      <br />
+      <br />
+      ______________________
+      <br />
+      Checked by
+    </div>
+  </body>
+</html>

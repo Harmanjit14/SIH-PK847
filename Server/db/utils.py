@@ -71,6 +71,7 @@ def get_semester_certifcate_context(student, semester):
     context['dob'] = str(student.dob)
     context['sem'] = str(semester)
     context['degree'] = degree_list[int(student.degree)]
+    context['grad'] = student.graduating_year
 
     total_cre=0
     cre_grade=0
@@ -88,6 +89,23 @@ def get_semester_certifcate_context(student, semester):
     sgpa = cre_grade/total_cre
     context['sg'] = str(sgpa)
     context['records'] = l
+    return context
+
+def get_other_certifcates_context(student):
+    context = {
+        'error': False,
+    }
+    context['name'] = student.name
+    context['fname'] = student.father_name
+    context['mname'] = student.mother_name
+    context['roll'] = student.roll
+    context['institute'] = student.institute.name
+    context['logo'] = student.institute.logo
+    context['signature'] = student.institute.signature
+    context['dob'] = str(student.dob)
+    context['degree'] = degree_list[int(student.degree)]
+    context['grad'] = student.graduating_year
+
     return context
 
     
