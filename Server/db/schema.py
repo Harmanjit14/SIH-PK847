@@ -9,7 +9,7 @@ from graphql import GraphQLError
 from django.db.models import Q
 from server.settings import EMAIL_HOST_USER
 from django.core.mail import EmailMessage
-from .utils import get_semester_certifcate_context,get_other_certifcates_context, render_to_pdf
+from .utils import get_semester_certifcate_context, get_other_certifcates_context, render_to_pdf
 
 
 class UserType(DjangoObjectType):
@@ -26,6 +26,8 @@ class Query(graphene.ObjectType):
 
     all_institutes = graphene.List(InstituteType)
     semester_certificate = graphene.String(sem=graphene.Int(required=True))
+    migration_certificate = graphene.String()
+    character_certificate = graphene.String()
 
     def resolve_all_institutes(self, info):
         usr = info.context.user
@@ -59,6 +61,78 @@ class Query(graphene.ObjectType):
                 raise GraphQLError('failed to create certificate')
 
             mail = EmailMessage(f"Certificate SEM: {sem}",
+                                "Here is your ceritificate",
+                                EMAIL_HOST_USER,
+                                [student.email])
+            mail.attach_file(location)
+            mail.send()
+            os.remove(location)
+        except Exception as e:
+            # raise GraphQLError(str(e))
+            print(e)
+            return 'Fail'
+
+        return 'Success'
+
+    def resolve_migration_certificate(self, info):
+
+        usr = info.context.user
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        student = Student.objects.get(user=usr)
+
+        if student == None:
+            raise GraphQLError('Not valid Student')
+
+        location = f'static/files/{student.id}migration.pdf'
+        try:
+            context = get_other_certifcates_context(student=student)
+
+            if context['error'] == True:
+                raise GraphQLError('Semester data does not exist')
+
+            resp = render_to_pdf('migration.html', location, context)
+            if not resp:
+                raise GraphQLError('failed to create certificate')
+
+            mail = EmailMessage(f"Migration Certificate",
+                                "Here is your ceritificate",
+                                EMAIL_HOST_USER,
+                                [student.email])
+            mail.attach_file(location)
+            mail.send()
+            os.remove(location)
+        except Exception as e:
+            # raise GraphQLError(str(e))
+            print(e)
+            return 'Fail'
+
+        return 'Success'
+
+    def resolve_character_certificate(self, info):
+
+        usr = info.context.user
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        student = Student.objects.get(user=usr)
+
+        if student == None:
+            raise GraphQLError('Not valid Student')
+
+        location = f'static/files/{student.id}character.pdf'
+        try:
+            context = get_other_certifcates_context(student=student)
+
+            if context['error'] == True:
+                raise GraphQLError('Semester data does not exist')
+
+            resp = render_to_pdf('character.html', location, context)
+            if not resp:
+                raise GraphQLError('failed to create certificate')
+
+            mail = EmailMessage(f"Migration Certificate",
                                 "Here is your ceritificate",
                                 EMAIL_HOST_USER,
                                 [student.email])
