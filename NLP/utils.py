@@ -1,9 +1,6 @@
 import numpy as np
 from inltk.inltk import tokenize
 from setup import language
-from queries import *
-from gql import Client
-from gql.transport.aiohttp import AIOHTTPTransport
 
 USERNAME = None
 LOGGEDIN = False
@@ -37,18 +34,3 @@ def bag_of_words(tokenized_sentence, words):
 
     return bag
 
-
-async def case_selector(id, client):
-
-    # Server Connection
-    transport = AIOHTTPTransport(url="http://localhost:8000/graphql")
-    server_client = Client(transport=transport,
-                           fetch_schema_from_transport=True)
-
-    if id == -1:
-        uname = input("Enter Username")
-        upass = input("Enter Password")
-        await login(uname, upass, client)
-
-
-# print(token('ਸਤ ਸ੍ਰੀ ਅਕਾਲ,  ਮੈਂ ਹੇਜ਼ਲ ਹਾਂ |'))

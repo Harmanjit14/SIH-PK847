@@ -4,6 +4,7 @@ import time
 import speech_recognition as sr
 import os
 from playsound import playsound
+from queries import *
 
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"key.json"
@@ -21,6 +22,11 @@ audio_config = texttospeech.AudioConfig(
 r = sr.Recognizer()
 keyword = "hazel"
 
+obj = Credentials()
+log = case_selector(-1,obj)
+if not log:
+    print('ਮਾਫ਼ ਕਰਨਾ ਮੈਂ ਤੁਹਾਨੂੰ ਲੌਗਇਨ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ ਸੀ')
+    exit()
 
 with sr.Microphone() as source:
     print('Adjusting mic')
@@ -42,7 +48,8 @@ while True:
                 response = r.recognize_google(query, language=language)
                 print(f'User Query: {response}')
                 
-                speech_response = nlp_resolver(response)
+                speech_response = nlp_resolver(response, obj)
+                print(speech_response)
                 synthesis_input = texttospeech.SynthesisInput(text=speech_response)
 
                 voice = texttospeech.VoiceSelectionParams(

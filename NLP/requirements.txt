@@ -1,6 +1,5 @@
 aiohttp==3.8.1
 aiosignal==1.2.0
-async-timeout==4.0.2
 attrs==22.1.0
 backoff==2.1.2
 beautifulsoup4==4.11.1

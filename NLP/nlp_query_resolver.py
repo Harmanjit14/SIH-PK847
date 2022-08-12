@@ -1,10 +1,10 @@
 
-from utils import bag_of_words, case_selector, token
+from utils import bag_of_words, token
 import random
 import json
 import torch
 from model import NeuralNet
-
+from queries import *
 
 # Load NLP Model Files
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -27,7 +27,7 @@ model.eval()
 
 bot_name = "Friday Night SIH"
 
-def nlp_resolver(text):
+def nlp_resolver(text,obj):
     sentence = token(text)
     X = bag_of_words(sentence, all_words)
     X = X.reshape(1, X.shape[0])
@@ -48,11 +48,11 @@ def nlp_resolver(text):
 
                 response = intent['responses']
                 resp = random.choice(response)
+                print("NLP Response ", resp)
                 if not isinstance(resp, int):
                     return resp
                 else:
-                    print(f"{bot_name}: {resp}")
-                    return 'ਸਤ ਸ੍ਰੀ ਅਕਾਲ'
-                    # case_selector(int(response[0]))
+                    query_response = case_selector(int(response[0]),obj)
+                    return query_response
     else:
-        print(f"{bot_name}: I do not understand...")
+        return f"{bot_name}: I do not understand..."
