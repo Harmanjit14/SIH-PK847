@@ -78,7 +78,7 @@ def get_semester_certificate(client):
 
     query = """
     {
-        semesterCertificate
+        semesterCertificate(sem:1)
     }
     """
     try:
