@@ -22,12 +22,24 @@ class Institute(models.Model):
     def __str__(self):
         return self.name
 
+class Teacher(models.Model):
+
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+    name = models.CharField(max_length=255, blank=False, null=False)
+    email = models.EmailField(unique=True)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    mobile = PhoneNumberField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.institute.name} {self.name}'
 
 class Student(models.Model):
 
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
     roll = models.IntegerField(unique=True)
-    name = models.CharField(max_length=255, blank=False, null=False)
+    first_name = models.CharField(max_length=255, blank=False, null=False)
+    last_name = models.CharField(max_length=255, blank=False, null=False)
     email = models.EmailField(unique=True)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     mobile = PhoneNumberField()

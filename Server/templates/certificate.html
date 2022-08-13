@@ -35,25 +35,27 @@
       }
 
       .student-info {
-        display: flex;
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: 2fr 2fr;
+        grid-template-rows: 100px;
+        grid-gap: 10px;
       }
 
-      .student-name {
-        /* margin-left: 20px; */
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-        /* width: 100px; */
-      }
+      /* .student-name {
+        margin-left: 20px; */
+      /* display: flex; */
+      /* flex-direction: column;
+        text-align: left; */
+      /* width: 100px;
+      } */
 
-      .student-id {
-        /* margin-right: 20px; */
-        display: flex;
-        flex-direction: column;
-        text-align: right;
-        /* width: 100px; */
-      }
+      /* .student-id {
+        margin-right: 20px; */
+      /* display: flex; */
+      /* flex-direction: column;
+        text-align: right; */
+      /* width: 100px;
+      } */
 
       #students {
         font-family: Arial, Helvetica, sans-serif;
