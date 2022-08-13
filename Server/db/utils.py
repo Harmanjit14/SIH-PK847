@@ -101,8 +101,7 @@ def UploadStudentDataUtil(url=None, teacher=None, degree=None, graduating_year=N
     """Get CSV of student data and add all students to DB"""
     if url == None or degree == None or teacher == None or graduating_year == None:
         return 'Error'
-    # df = pd.read_csv(url)
-    df = pd.read_csv('./student.csv')
+    df = pd.read_csv(url)
     print(df)
     # Add try catch
     institute = teacher.institute
