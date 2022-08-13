@@ -21,6 +21,7 @@ class InstituteType(DjangoObjectType):
     class Meta:
         model = Institute
 
+
 class StudentType(DjangoObjectType):
     class Meta:
         model = Student
@@ -156,13 +157,14 @@ class Query(graphene.ObjectType):
 
         if usr.is_anonymous:
             raise GraphQLError('Not logged in!')
-        
+
         teacher = Teacher.objects.get(user=usr)
 
         if teacher == None:
             raise GraphQLError('Not a valid teacher')
 
-        records = Student.objects.filter(institute = teacher.institute).order_by('-graduating_year').order_by('degree')
+        records = Student.objects.filter(institute=teacher.institute).order_by(
+            '-graduating_year').order_by('degree')
 
         return records
 
@@ -212,10 +214,12 @@ class UploadStudentMarksCSV(graphene.Mutation):
     class Arguments:
         url = graphene.String(required=True)
         subject = graphene.String(required=True)
+        subject_code = graphene.String(required=True)
         semester = graphene.Int(required=True)
-        batch = graphene.Int(required=True)
+        graduating_year = graphene.Int(required=True)
+        credits = graphene.Int(required=True)
 
-    def mutate(self, info, url, subject, semester, batch):
+    def mutate(self, info, url, subject, semester, graduating_year, subject_code, credits):
         user = info.context.user
 
         if user.is_anonymous:
@@ -225,15 +229,17 @@ class UploadStudentMarksCSV(graphene.Mutation):
 
         if teacher == None:
             raise GraphQLError("Not a Teacher!")
-        
+
         institute = teacher.institute
 
         if Academic_Record.objects.filter(semester=semester).filter(
-                subject=subject).filter(institute=institute).filter(batch=batch).exists():
+                subject=subject).filter(institute=institute).filter(graduating_year=graduating_year).exists():
             raise GraphQLError('Data for similar fields already exists')
+
         ret = UploadCSVUtil(url=url, subject=subject, semester=semester,
-                        batch=batch, institute=institute)
+                            institute=institute, subject_code=subject_code, batch=graduating_year, credits=credits)
         return UploadStudentMarksCSV(success=ret)
+
 
 class UploadStudentDataCSV(graphene.Mutation):
 
@@ -255,7 +261,7 @@ class UploadStudentDataCSV(graphene.Mutation):
         if teacher == None:
             raise GraphQLError("Not a Teacher!")
 
-        ret = UploadStudentDataUtil(url,teacher,degree,graduating_year)
+        ret = UploadStudentDataUtil(url, teacher, degree, graduating_year)
 
         return UploadStudentDataCSV(success=ret)
 

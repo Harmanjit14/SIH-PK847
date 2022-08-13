@@ -147,9 +147,9 @@ def UploadStudentDataUtil(url=None, teacher=None, degree=None, graduating_year=N
     return 'Done'
 
 
-def UploadCSVUtil(url=None, subject=None, semester=None, batch=None, institute=None):
+def UploadCSVUtil(url=None, subject=None, semester=None, batch=None, institute=None, subject_code=None, credits=None):
     """Get CSV of student marks and add student marks to DB"""
-    if url == None or subject == None or semester == None or batch == None or institute == None:
+    if url == None or subject == None or semester == None or batch == None or institute == None or subject_code == None or credits == None:
         return 'Error'
     df = pd.read_csv(url)
     print(df)
@@ -158,8 +158,17 @@ def UploadCSVUtil(url=None, subject=None, semester=None, batch=None, institute=N
         try:
             student = Student.objects.get(roll=row.Roll)
             obj = Academic_Record(
-                semester=semester, institute=institute, student=student, grade=row.Grade, marks=row.Marks, subject=subject, batch=batch)
+                semester=semester,
+                institute=institute,
+                subject_code=subject_code,
+                student=student,
+                grade=row.Grade,
+                marks=row.Marks,
+                subject=subject,
+                graduating_year=batch,
+                credits=credits)
             obj.save()
-        except:
-            continue
+        except Exception as e:
+            print(e)
+            return str(e)
     return 'Done'
