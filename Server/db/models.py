@@ -43,10 +43,10 @@ class Student(models.Model):
     email = models.EmailField(unique=True)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     mobile = PhoneNumberField()
-    dob = models.DateField()
+    dob = models.CharField(max_length=10,blank=True)
     graduating_year = models.IntegerField()
     degree = models.CharField(choices=degree_choices,
-                              max_length=255, default='BE')
+                              max_length=255, default='0')
     address = models.CharField(max_length=255, blank=True)
     wallet = models.IntegerField(validators=[MinValueValidator(0)])
     user = models.ForeignKey(User, on_delete=models.CASCADE)

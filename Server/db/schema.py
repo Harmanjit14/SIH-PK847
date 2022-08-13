@@ -3,13 +3,13 @@ import graphene
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
 import os
-from db.utils import UploadPDF
+from db.utils import *
 from .models import *
 from graphql import GraphQLError
 from django.db.models import Q
 from server.settings import EMAIL_HOST_USER
 from django.core.mail import EmailMessage
-from .utils import get_semester_certifcate_context, get_other_certifcates_context, render_to_pdf
+from .utils import UploadCSVUtil, get_semester_certifcate_context, get_other_certifcates_context, render_to_pdf
 
 
 class UserType(DjangoObjectType):
@@ -21,6 +21,10 @@ class InstituteType(DjangoObjectType):
     class Meta:
         model = Institute
 
+class StudentType(DjangoObjectType):
+    class Meta:
+        model = Student
+
 
 class Query(graphene.ObjectType):
 
@@ -28,6 +32,7 @@ class Query(graphene.ObjectType):
     semester_certificate = graphene.String(sem=graphene.Int(required=True))
     migration_certificate = graphene.String()
     character_certificate = graphene.String()
+    get_all_students = graphene.List(StudentType)
 
     def resolve_all_institutes(self, info):
         usr = info.context.user
@@ -146,6 +151,21 @@ class Query(graphene.ObjectType):
 
         return 'Success'
 
+    def resolve_get_all_students(self, info):
+        usr = info.context.user
+
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+        
+        teacher = Teacher.objects.get(user=usr)
+
+        if teacher == None:
+            raise GraphQLError('Not a valid teacher')
+
+        records = Student.objects.filter(institute = teacher.institute).order_by('-graduating_year').order_by('degree')
+
+        return records
+
 
 class CreateUser(graphene.Mutation):
     user = graphene.Field(UserType)
@@ -185,7 +205,7 @@ class DeleteUser(graphene.Mutation):
         return DeleteUser(user=str)
 
 
-class UploadCSV(graphene.Mutation):
+class UploadStudentMarksCSV(graphene.Mutation):
 
     success = graphene.String()
 
@@ -194,22 +214,54 @@ class UploadCSV(graphene.Mutation):
         subject = graphene.String(required=True)
         semester = graphene.Int(required=True)
         batch = graphene.Int(required=True)
-        institute_id = graphene.String(required=True)
 
-    def mutate(self, info, url, subject, semester, batch, institute_id):
+    def mutate(self, info, url, subject, semester, batch):
         user = info.context.user
 
         if user.is_anonymous:
             raise GraphQLError("Not Logged In!")
+
+        teacher = Teacher.objects.get(user=user)
+
+        if teacher == None:
+            raise GraphQLError("Not a Teacher!")
+        
+        institute = teacher.institute
+
         if Academic_Record.objects.filter(semester=semester).filter(
-                subject=subject).filter(institute__id=institute_id).filter(batch=batch).exists():
+                subject=subject).filter(institute=institute).filter(batch=batch).exists():
             raise GraphQLError('Data for similar fields already exists')
-        ret = UploadPDF(url=url, subject=subject, semester=semester,
-                        batch=batch, institute_id=institute_id)
-        return UploadCSV(success=ret)
+        ret = UploadCSVUtil(url=url, subject=subject, semester=semester,
+                        batch=batch, institute=institute)
+        return UploadStudentMarksCSV(success=ret)
+
+class UploadStudentDataCSV(graphene.Mutation):
+
+    success = graphene.String()
+
+    class Arguments:
+        url = graphene.String(required=True)
+        degree = graphene.String(required=True)
+        graduating_year = graphene.Int(required=True)
+
+    def mutate(self, info, url, degree, graduating_year):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError("Not Logged In!")
+
+        teacher = Teacher.objects.get(user=user)
+
+        if teacher == None:
+            raise GraphQLError("Not a Teacher!")
+
+        ret = UploadStudentDataUtil(url,teacher,degree,graduating_year)
+
+        return UploadStudentDataCSV(success=ret)
 
 
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     delete_user = DeleteUser.Field()
-    upload_csv = UploadCSV.Field()
+    upload_student_marks_csv = UploadStudentMarksCSV.Field()
+    upload_student_data_csv = UploadStudentDataCSV.Field()
