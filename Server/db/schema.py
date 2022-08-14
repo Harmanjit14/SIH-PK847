@@ -26,14 +26,51 @@ class StudentType(DjangoObjectType):
     class Meta:
         model = Student
 
+class AcadamicRecordsType(DjangoObjectType):
+    class Meta:
+        model = Academic_Record
+
 
 class Query(graphene.ObjectType):
 
     all_institutes = graphene.List(InstituteType)
+
+    # NLP Engine Quries
     semester_certificate = graphene.String(sem=graphene.Int(required=True))
     migration_certificate = graphene.String()
     character_certificate = graphene.String()
+
+    # Institute Portal Queries
     get_all_students = graphene.List(StudentType)
+
+    # Flutter App Queries
+    student_login = graphene.Field(StudentType)
+    student_marks = graphene.List(AcadamicRecordsType)
+
+    def resolve_student_marks(self,info):
+        usr = info.context.user
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        student = Student.objects.get(user=usr)
+
+        if student == None:
+            raise GraphQLError('Not valid Student')
+
+        records = Academic_Record.objects.filter(student=student).order_by('-semester')
+        return records
+
+    def resolve_student_login(self, info):
+        usr = info.context.user
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        student = Student.objects.get(user=usr)
+
+        if student == None:
+            raise GraphQLError('Not valid Student')
+
+        return student
 
     def resolve_all_institutes(self, info):
         usr = info.context.user
