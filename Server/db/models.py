@@ -23,15 +23,17 @@ class Institute(models.Model):
     def __str__(self):
         return self.name
 
+
 class Manager(models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
     name = models.CharField(max_length=255, blank=False, null=False)
     email = models.EmailField(unique=True)
     mobile = PhoneNumberField()
-    location = models.CharField(max_length=255,unique=True)
+    location = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return f'{self.location} {self.name}'
+
 
 class Delivery(models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
@@ -58,6 +60,7 @@ class Teacher(models.Model):
     def __str__(self):
         return f'{self.institute.name} {self.name}'
 
+
 class Student(models.Model):
 
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
@@ -67,7 +70,7 @@ class Student(models.Model):
     email = models.EmailField(unique=True)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     mobile = PhoneNumberField()
-    dob = models.CharField(max_length=10,blank=True)
+    dob = models.CharField(max_length=10, blank=True)
     graduating_year = models.IntegerField()
     degree = models.CharField(choices=degree_choices,
                               max_length=255, default='0')
@@ -95,7 +98,7 @@ class Academic_Record(models.Model):
     marks = models.IntegerField(null=True, validators=[MinValueValidator(0)])
     credits = models.FloatField(default=0, null=False, blank=False)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
-    graduating_year = models.IntegerField(blank=False,null=False)
+    graduating_year = models.IntegerField(blank=False, null=False)
 
     def __str__(self):
         return f'{self.id} {self.student.institute.name}'
@@ -110,3 +113,44 @@ class Academic_Record_File(models.Model):
 
     def __str__(self):
         return self.id
+
+
+class Certificate_Requests(models.Model):
+
+    delivery_choices = (
+        ("0", "Accepted"),
+        ("1", "Transit"),
+        ("2", "Delivered"),
+        ("3", "Failed Attempt"),
+        ("4", "Expired"),
+        ("5", "Waiting")
+    )
+
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    verified = models.BooleanField(default=False)
+    delivery_status = models.CharField(
+        choices=delivery_choices, default="5", max_length=255, null=False, blank=False)
+    delivery_manager = models.ForeignKey(
+        Manager, null=True, blank=True, on_delete=models.SET_NULL)
+    delivery_man = models.ForeignKey(
+        Delivery, null=True, blank=True, on_delete=models.SET_NULL)
+    payment_amount = models.IntegerField(default=0)
+    payment_status = models.BooleanField(default=False)
+    delivery_done = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.id}"
+
+
+class Payment_Receipt(models.Model):
+
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    payment = models.IntegerField(default=0)
+    payment_status = models.BooleanField(default=False)
+    paymentid = models.CharField(max_length=255)
+    request = models.ForeignKey(Certificate_Requests, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.id}"

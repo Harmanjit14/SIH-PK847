@@ -26,9 +26,15 @@ class StudentType(DjangoObjectType):
     class Meta:
         model = Student
 
+
 class AcadamicRecordsType(DjangoObjectType):
     class Meta:
         model = Academic_Record
+
+
+class CertificateRequestType(DjangoObjectType):
+    class Meta:
+        model = Certificate_Requests
 
 
 class Query(graphene.ObjectType):
@@ -46,8 +52,9 @@ class Query(graphene.ObjectType):
     # Flutter App Queries
     student_login = graphene.Field(StudentType)
     student_marks = graphene.List(AcadamicRecordsType)
+    student_requests = graphene.List(CertificateRequestType)
 
-    def resolve_student_marks(self,info):
+    def resolve_student_requests(elf, info):
         usr = info.context.user
         if usr.is_anonymous:
             raise GraphQLError('Not logged in!')
@@ -57,7 +64,23 @@ class Query(graphene.ObjectType):
         if student == None:
             raise GraphQLError('Not valid Student')
 
-        records = Academic_Record.objects.filter(student=student).order_by('-semester')
+        records = Certificate_Requests.objects.filter(
+            student=student).filter(delivery_done=False)
+
+        return records
+
+    def resolve_student_marks(self, info):
+        usr = info.context.user
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        student = Student.objects.get(user=usr)
+
+        if student == None:
+            raise GraphQLError('Not valid Student')
+
+        records = Academic_Record.objects.filter(
+            student=student).order_by('-semester')
         return records
 
     def resolve_student_login(self, info):
@@ -147,9 +170,7 @@ class Query(graphene.ObjectType):
             mail.send()
             os.remove(location)
         except Exception as e:
-            # raise GraphQLError(str(e))
-            print(e)
-            return 'Fail'
+            return str(e)
 
         return 'Success'
 

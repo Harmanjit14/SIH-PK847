@@ -8,4 +8,6 @@ admin.site.register(Academic_Record_File)
 admin.site.register(Teacher)
 admin.site.register(Manager)
 admin.site.register(Delivery)
+admin.site.register(Payment_Receipt)
+admin.site.register(Certificate_Requests)
 # Register your models here.
