@@ -1,4 +1,5 @@
 
+from pyexpat import model
 from django.core.validators import MinValueValidator
 from uuid import uuid4
 from django.db import models
@@ -21,6 +22,29 @@ class Institute(models.Model):
 
     def __str__(self):
         return self.name
+
+class Manager(models.Model):
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+    name = models.CharField(max_length=255, blank=False, null=False)
+    email = models.EmailField(unique=True)
+    mobile = PhoneNumberField()
+    location = models.CharField(max_length=255,unique=True)
+
+    def __str__(self):
+        return f'{self.location} {self.name}'
+
+class Delivery(models.Model):
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+    name = models.CharField(max_length=255, blank=False, null=False)
+    email = models.EmailField(unique=True)
+    mobile = PhoneNumberField()
+    manager = models.ForeignKey(Manager, on_delete=models.CASCADE)
+    state = models.CharField(max_length=255, blank=False)
+    city = models.CharField(max_length=255, blank=False)
+
+    def __str__(self):
+        return self.name
+
 
 class Teacher(models.Model):
 
