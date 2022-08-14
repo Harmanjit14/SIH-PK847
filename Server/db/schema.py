@@ -1,4 +1,5 @@
 
+
 import graphene
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
@@ -30,6 +31,14 @@ class AcadamicRecordsType(DjangoObjectType):
     class Meta:
         model = Academic_Record
 
+class ManagerUtil(DjangoObjectType):
+    class Meta:
+        model = Manager
+
+class DeliveryUtil(DjangoObjectType):
+    class Meta:
+        model = Delivery
+
 
 class Query(graphene.ObjectType):
 
@@ -42,6 +51,9 @@ class Query(graphene.ObjectType):
 
     # Institute Portal Queries
     get_all_students = graphene.List(StudentType)
+
+    # Get delivery persons info
+    get_delivery_persons = graphene.List(DeliveryUtil)
 
     # Flutter App Queries
     student_login = graphene.Field(StudentType)
@@ -202,6 +214,21 @@ class Query(graphene.ObjectType):
 
         records = Student.objects.filter(institute=teacher.institute).order_by(
             '-graduating_year').order_by('degree')
+
+        return records
+
+    def resolve_get_delivery_persons(self, info):
+        usr = info.context.user
+
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        manager = Manager.objects.get(user=usr)
+
+        if manager == None:
+            raise GraphQLError('Not a valid person')
+
+        records = Delivery.objects.filter(manager=manager)
 
         return records
 

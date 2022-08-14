@@ -29,6 +29,7 @@ class Manager(models.Model):
     email = models.EmailField(unique=True)
     mobile = PhoneNumberField()
     location = models.CharField(max_length=255,unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f'{self.location} {self.name}'
