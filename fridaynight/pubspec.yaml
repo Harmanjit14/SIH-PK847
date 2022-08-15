@@ -35,9 +35,13 @@ dependencies:
   flutter_spinkit: ^5.1.0
   get: ^4.6.5
   graphql: ^5.1.1
+  permission_handler: ^10.0.0
   rxdart: ^0.27.5
   salomon_bottom_bar: ^3.3.1
-  sound_stream: ^0.3.0
+  sound_stream:
+    git:
+      url: https://github.com/AlexanderHorielko/flutter-sound-stream.git
+      ref: android-fix
 
 dev_dependencies:
   flutter_test:
