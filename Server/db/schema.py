@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 from importlib.metadata import requires
+=======
+
+>>>>>>> d3ed65bbf0a80f79b6005d1c4f21c516da444828
 import graphene
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
@@ -32,14 +36,85 @@ class SubjectType(DjangoObjectType):
         model = Semester_subject_registration
 
 
+class AcadamicRecordsType(DjangoObjectType):
+    class Meta:
+        model = Academic_Record
+
+class ManagerUtil(DjangoObjectType):
+    class Meta:
+        model = Manager
+
+class DeliveryUtil(DjangoObjectType):
+    class Meta:
+        model = Delivery
+
+
+class CertificateRequestType(DjangoObjectType):
+    class Meta:
+        model = Certificate_Requests
+
+
 class Query(graphene.ObjectType):
 
     all_institutes = graphene.List(InstituteType)
+
+    # NLP Engine Quries
     semester_certificate = graphene.String(sem=graphene.Int(required=True))
     migration_certificate = graphene.String()
     character_certificate = graphene.String()
+
+    # Institute Portal Queries
     get_all_students = graphene.List(StudentType)
     get_all_sem_subjects = graphene.List(SubjectType, sem=graphene.Int(required=True), degree=graphene.String(required=True), graduating_year=graphene.Int(required=True))
+
+    # Get delivery persons info
+    get_delivery_persons = graphene.List(DeliveryUtil)
+
+    # Flutter App Queries
+    student_login = graphene.Field(StudentType)
+    student_marks = graphene.List(AcadamicRecordsType)
+    student_requests = graphene.List(CertificateRequestType)
+
+    def resolve_student_requests(elf, info):
+        usr = info.context.user
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        student = Student.objects.get(user=usr)
+
+        if student == None:
+            raise GraphQLError('Not valid Student')
+
+        records = Certificate_Requests.objects.filter(
+            student=student).filter(delivery_done=False)
+
+        return records
+
+    def resolve_student_marks(self, info):
+        usr = info.context.user
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        student = Student.objects.get(user=usr)
+
+        if student == None:
+            raise GraphQLError('Not valid Student')
+
+        records = Academic_Record.objects.filter(
+            student=student).order_by('-semester')
+        return records
+
+    def resolve_student_login(self, info):
+        usr = info.context.user
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        student = Student.objects.get(user=usr)
+
+        if student == None:
+            raise GraphQLError('Not valid Student')
+
+        return student
 
     def resolve_all_institutes(self, info):
         usr = info.context.user
@@ -116,9 +191,7 @@ class Query(graphene.ObjectType):
             mail.send()
             os.remove(location)
         except Exception as e:
-            # raise GraphQLError(str(e))
-            print(e)
-            return 'Fail'
+            return str(e)
 
         return 'Success'
 
@@ -174,12 +247,17 @@ class Query(graphene.ObjectType):
 
         return records
 
+<<<<<<< HEAD
     def resolve_get_all_sem_subjects(self, info, sem, degree, graduating_year):
+=======
+    def resolve_get_delivery_persons(self, info):
+>>>>>>> d3ed65bbf0a80f79b6005d1c4f21c516da444828
         usr = info.context.user
 
         if usr.is_anonymous:
             raise GraphQLError('Not logged in!')
 
+<<<<<<< HEAD
         teacher = Teacher.objects.get(user=usr)
         if teacher == None:
             raise GraphQLError('Not a valid teacher')
@@ -189,6 +267,16 @@ class Query(graphene.ObjectType):
         return subjects
 
 
+=======
+        manager = Manager.objects.get(user=usr)
+
+        if manager == None:
+            raise GraphQLError('Not a valid person')
+
+        records = Delivery.objects.filter(manager=manager)
+
+        return records
+>>>>>>> d3ed65bbf0a80f79b6005d1c4f21c516da444828
 
 
 class CreateUser(graphene.Mutation):
