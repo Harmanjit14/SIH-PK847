@@ -78,9 +78,10 @@ class Student(models.Model):
     address = models.CharField(max_length=255, blank=True)
     wallet = models.IntegerField(validators=[MinValueValidator(0)])
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    batch = models.CharField(blank=True, max_length=255)
+    batch = models.CharField(blank=True, max_length=255)#subsections 
     father_name = models.CharField(blank=True, max_length=255)
     mother_name = models.CharField(blank=True, max_length=255)
+    current_semester=models.IntegerField(default=1, null=True)
 
     def __str__(self):
         return f'{self.institute.name} {self.roll}'
@@ -115,6 +116,28 @@ class Academic_Record_File(models.Model):
     def __str__(self):
         return self.id
 
+<<<<<<< HEAD
+class Semester_subject_registration(models.Model):
+    id = models.UUIDField(default=uuid4, editable=False, primary_key=True)
+    credits = models.FloatField(default=0, null=False, blank=False)
+    subject = models.CharField(
+        blank=False, null=False, editable=True, max_length=255)
+    subject_code = models.CharField(max_length=255, blank=False, null=False)
+    semester = models.IntegerField()
+    graduating_year = models.IntegerField(blank=False,null=False)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    degree = models.CharField(choices=degree_choices,
+                              max_length=255, default='0')
+    
+    
+    
+    def __str__(self) :
+        return f'{self.subject_code} {self.institute.name}'
+
+
+
+
+=======
 
 class Certificate_Requests(models.Model):
 
@@ -155,3 +178,4 @@ class Payment_Receipt(models.Model):
 
     def __str__(self):
         return f"{self.id}"
+>>>>>>> d3ed65bbf0a80f79b6005d1c4f21c516da444828
