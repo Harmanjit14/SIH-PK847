@@ -9,9 +9,8 @@ class Student {
       address,
       batch,
       fatherName,
-      roll,
       motherName;
-  int? graduatingYear, wallet, currentSem;
+  int? graduatingYear, wallet, currentSem, roll;
 }
 
 class Institute {

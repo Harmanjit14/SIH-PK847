@@ -159,7 +159,8 @@ class _ChatState extends State<Chat> {
   //------------------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
-    return Column(children: <Widget>[
+    return Scaffold( 
+      body:Column(children: <Widget>[
       Flexible(
           child: ListView.builder(
         padding: EdgeInsets.all(8.0),
@@ -200,7 +201,7 @@ class _ChatState extends State<Chat> {
               ),
             ),
           )),
-    ]);
+    ]));
   }
 }
 

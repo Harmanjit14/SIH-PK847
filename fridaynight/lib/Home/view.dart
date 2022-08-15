@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fridaynight/Auth/query.dart';
+import 'package:fridaynight/Home/home_tab/view.dart';
 import 'package:fridaynight/Home/profile_tab/view.dart';
 import 'package:fridaynight/chat/view.dart';
 import 'package:fridaynight/utils.dart';
@@ -26,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: (() {
-          Get.to(()=> const Chat());
+          Get.to(() => const Chat());
         }),
         child: Icon(
           Icons.mic,
@@ -38,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
           physics: const NeverScrollableScrollPhysics(),
           controller: _controller,
           children: [
-            Text("Events and Request"),
+            HomePage(),
             Text("Request"),
             Text("Acadamic"),
             const ProfileTab(),

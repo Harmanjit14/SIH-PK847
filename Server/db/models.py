@@ -116,7 +116,6 @@ class Academic_Record_File(models.Model):
     def __str__(self):
         return self.id
 
-<<<<<<< HEAD
 class Semester_subject_registration(models.Model):
     id = models.UUIDField(default=uuid4, editable=False, primary_key=True)
     credits = models.FloatField(default=0, null=False, blank=False)

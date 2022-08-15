@@ -120,7 +120,7 @@ Future<bool> getStudent() async {
   student.graduatingYear = studentData['graduatingYear'];
   student.wallet = studentData['wallet'];
   student.roll = studentData['roll'];
-  student.currentSem = studentData['currentSem'];
+  // student.currentSem = studentData['currentSem'];
 
   // Institute Data
   var instituteData = data.data!['studentLogin']['institute'];
