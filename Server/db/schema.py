@@ -1,4 +1,5 @@
 
+from importlib.metadata import requires
 import graphene
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
@@ -26,6 +27,10 @@ class StudentType(DjangoObjectType):
     class Meta:
         model = Student
 
+class SubjectType(DjangoObjectType):
+    class Meta:
+        model = Semester_subject_registration
+
 
 class Query(graphene.ObjectType):
 
@@ -34,6 +39,7 @@ class Query(graphene.ObjectType):
     migration_certificate = graphene.String()
     character_certificate = graphene.String()
     get_all_students = graphene.List(StudentType)
+    get_all_sem_subjects = graphene.List(SubjectType, sem=graphene.Int(required=True), degree=graphene.String(required=True), graduating_year=graphene.Int(required=True))
 
     def resolve_all_institutes(self, info):
         usr = info.context.user
@@ -167,6 +173,22 @@ class Query(graphene.ObjectType):
             '-graduating_year').order_by('degree')
 
         return records
+
+    def resolve_get_all_sem_subjects(self, info, sem, degree, graduating_year):
+        usr = info.context.user
+
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        teacher = Teacher.objects.get(user=usr)
+        if teacher == None:
+            raise GraphQLError('Not a valid teacher')
+
+        subjects=Semester_subject_registration.objects.filter(institute=teacher.institute).filter(graduating_year=graduating_year).filter(semester=sem).filter(degree=degree)
+        
+        return subjects
+
+
 
 
 class CreateUser(graphene.Mutation):
