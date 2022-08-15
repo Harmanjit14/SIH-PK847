@@ -19,10 +19,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'FridayNight-SIH',
       theme: ThemeData(
-        // useMaterial3: true,
-        splashColor: Colors.amber[700],
-        progressIndicatorTheme: const ProgressIndicatorThemeData(color: Colors.amber),
-        primarySwatch: Colors.amber,
+        useMaterial3: true,
+        colorScheme: const ColorScheme.light(),
       ),
       home: const LoginSreen(),
     );
