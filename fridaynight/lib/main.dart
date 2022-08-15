@@ -8,14 +8,9 @@ Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   Map<Permission, PermissionStatus> statuses = await [
-    Permission.storage,
-    Permission.camera,
-    Permission.sensors,
     Permission.microphone,
     Permission.speech,
-    Permission.mediaLibrary,
   ].request();
-  print(statuses[Permission.location]);
   runApp(const MyApp());
   FlutterNativeSplash.remove();
 }

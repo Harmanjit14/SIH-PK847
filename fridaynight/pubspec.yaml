@@ -34,6 +34,7 @@ dependencies:
   flutter_native_splash: ^2.2.7
   flutter_spinkit: ^5.1.0
   get: ^4.6.5
+  google_speech: ^2.1.1
   graphql: ^5.1.1
   permission_handler: ^10.0.0
   rxdart: ^0.27.5
@@ -44,6 +45,7 @@ dependencies:
       ref: android-fix
 
 dev_dependencies:
+  flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
 
