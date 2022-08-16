@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fridaynight/Auth/query.dart';
 import 'package:fridaynight/Home/home_tab/view.dart';
 import 'package:fridaynight/Home/profile_tab/view.dart';
+import 'package:fridaynight/Home/request_tab/view.dart';
 import 'package:fridaynight/chat/view.dart';
 import 'package:fridaynight/utils.dart';
 import 'package:get/get.dart';
@@ -40,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
           controller: _controller,
           children: [
             HomePage(),
-            Text("Request"),
+            const RequestsTab(),
             Text("Acadamic"),
             const ProfileTab(),
           ],

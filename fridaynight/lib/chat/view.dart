@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fridaynight/utils.dart';
 import 'package:google_speech/google_speech.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sound_stream/sound_stream.dart';
@@ -161,11 +162,14 @@ class _ChatState extends State<Chat> {
             child: IconTheme(
               data: IconThemeData(color: Theme.of(context).colorScheme.primary),
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                margin: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Row(
                   children: <Widget>[
                     Flexible(
                       child: TextField(
+                        style: const TextStyle(
+                          fontSize: 18,
+                        ),
                         controller: _textController,
                         onSubmitted: handleSubmitted,
                         decoration: const InputDecoration.collapsed(
@@ -206,7 +210,13 @@ class ChatMessage extends StatelessWidget {
     return <Widget>[
       Container(
         margin: const EdgeInsets.only(right: 16.0),
-        child: const CircleAvatar(child: Text('Bot')),
+        child: CircleAvatar(
+            backgroundColor: light.primary,
+            child: Text(
+              name!,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: light.background),
+            )),
       ),
       Expanded(
         child: Column(
@@ -239,11 +249,13 @@ class ChatMessage extends StatelessWidget {
       ),
       Container(
         margin: const EdgeInsets.only(left: 16.0),
-        child: const CircleAvatar(
+        child: CircleAvatar(
+            backgroundColor: light.primary,
             child: Text(
-          'You',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        )),
+              name!,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: light.background),
+            )),
       ),
     ];
   }

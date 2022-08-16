@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'quote.dart';
-import 'quote_card.dart';
+import 'util.dart';
+import 'model.dart';
 
 void main() => runApp(MaterialApp(home: HomePage()));
 
@@ -21,16 +21,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        title: Text('Home Page'),
-        centerTitle: true,
-        backgroundColor: Colors.purple[600],
-      ),
-      body: Column(
-        children: checkpoints.map((check) => StatusCard(check: check)).toList(),
-      ),
+    return Column(
+      children: checkpoints.map((check) => StatusCard(check: check)).toList(),
     );
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'quote.dart';
+import 'package:fridaynight/Home/home_tab/model.dart';
 
 class StatusCard extends StatelessWidget {
   final certiCheck check;
-  StatusCard({required this.check});
+  const StatusCard({Key? key, required this.check}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class StatusCard extends StatelessWidget {
                   color: Colors.grey[800],
                 ),
               ),
-              SizedBox(height: 6.0),
+              const SizedBox(height: 6.0),
               Text(
                 check.status,
                 style: TextStyle(
