@@ -15,7 +15,6 @@ class _ProfileTabState extends State<ProfileTab> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
       shrinkWrap: true,
       children: [
         Column(
@@ -35,37 +34,125 @@ class _ProfileTabState extends State<ProfileTab> {
             ),
           ],
         ),
-        const SizedBox(
-              height: 40,
-            ),
-        Text(
-          "Student Name: ${student.firstName} ${student.lastName}",
-          style: const TextStyle(fontSize: 20),
-        ),
-        Text(
-          "Student Email: ${student.email}",
-          style: const TextStyle(fontSize: 20),
-        ),
-        Text(
-          "Registeration Number: ${student.roll}",
-          style: const TextStyle(fontSize: 20),
-        ),
-        Text(
-          "Student Degree: ${student.degree}",
-          style: const TextStyle(fontSize: 20),
-        ),
-        Text(
-          "Current Semester: ${student.currentSem}",
-          style: const TextStyle(fontSize: 20),
-        ),
-        Text(
-          "Alloted Batch: ${student.batch}",
-          style: const TextStyle(fontSize: 20),
-        ),
-        Text(
-          "Graduating Year: ${student.graduatingYear}",
-          style: const TextStyle(fontSize: 20),
-        ),
+        Table(
+          border: TableBorder.all(),
+          children: [
+            TableRow(children: [
+              const Padding(
+                padding: EdgeInsets.only(left: 15),
+                child: Text(
+                  "Student Name ",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 15),
+                child: Text(
+                  "${student.firstName} ${student.lastName}",
+                  style: TextStyle(fontSize: 20),
+                ),
+              )
+            ]),
+            TableRow(children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: const Text(
+                  "Student Email ",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Text(
+                  "${student.email}",
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
+            ]),
+            TableRow(children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: const Text(
+                  "Registeration No. ",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Text(
+                  "${student.roll}",
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
+            ]),
+            TableRow(children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: const Text(
+                  "Student Degree ",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Text(
+                  "${student.degree}",
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
+            ]),
+            TableRow(children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: const Text(
+                  "Current Semester ",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Text(
+                  "${student.currentSem}",
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
+            ]),
+            TableRow(children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: const Text(
+                  "Batch ",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Text(
+                  "${student.batch}",
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
+            ]),
+            TableRow(children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: const Text(
+                  "Graduation Year ",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Text(
+                  "${student.graduatingYear}",
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
+            ]),
+          ],
+        )
       ],
     );
   }

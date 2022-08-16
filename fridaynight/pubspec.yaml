@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -36,7 +36,6 @@ dependencies:
   get: ^4.6.5
   google_speech: ^2.1.1
   graphql: ^5.1.1
-  permission_handler: ^10.0.0
   rxdart: ^0.27.5
   salomon_bottom_bar: ^3.3.1
   sound_stream:
@@ -53,7 +52,6 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
