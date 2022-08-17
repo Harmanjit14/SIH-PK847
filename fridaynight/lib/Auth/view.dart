@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fridaynight/Auth/query.dart';
+import 'package:fridaynight/Home/view.dart';
+import 'package:fridaynight/utils.dart';
 import 'package:get/get.dart';
 
 class ButtonLogin extends GetxController {
@@ -45,16 +48,18 @@ class _LoginSreenState extends State<LoginSreen> {
     switch (btnState.buttonState.value) {
       case 0:
         {
-          return const Text(
+          return Text(
             "Continue",
             style: TextStyle(
-                color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+                color: light.background,
+                fontSize: 20,
+                fontWeight: FontWeight.bold),
           );
         }
       case 1:
         {
           return SpinKitDoubleBounce(
-            color: Colors.amber[100],
+            color: light.background,
             size: 50.0,
           );
         }
@@ -62,15 +67,18 @@ class _LoginSreenState extends State<LoginSreen> {
         {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.verified),
-              SizedBox(
+            children: [
+              Icon(
+                Icons.verified,
+                color: light.background,
+              ),
+              const SizedBox(
                 width: 7,
               ),
               Text(
                 "Success!",
                 style: TextStyle(
-                    color: Colors.black,
+                    color: light.background,
                     fontSize: 20,
                     fontWeight: FontWeight.normal),
               ),
@@ -81,15 +89,18 @@ class _LoginSreenState extends State<LoginSreen> {
         {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.error),
-              SizedBox(
+            children: [
+              Icon(
+                Icons.error,
+                color: light.background,
+              ),
+              const SizedBox(
                 width: 7,
               ),
               Text(
                 "Check Credentials",
                 style: TextStyle(
-                    color: Colors.black,
+                    color: light.background,
                     fontSize: 20,
                     fontWeight: FontWeight.normal),
               ),
@@ -110,16 +121,23 @@ class _LoginSreenState extends State<LoginSreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-          child: SingleChildScrollView(
-        child: Column(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: SafeArea(
+            child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: Image.asset("assets/login.gif"),
+            ),
             Container(
               margin: const EdgeInsets.fromLTRB(20, 10, 20, 0),
               child: const Text(
                 "FridayNight-SIH",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 35,
@@ -133,17 +151,19 @@ class _LoginSreenState extends State<LoginSreen> {
               ),
             ),
             Container(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
               margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
               child: const Text(
-                "Welcome Back",
+                "Welcome Back, Please Login with your Institute credentials to proceed!",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.black,
-                    fontSize: 25,
+                    fontSize: 20,
                     fontWeight: FontWeight.w500),
               ),
             ),
             Container(
-              margin: const EdgeInsets.fromLTRB(20, 60, 20, 0),
+              margin: const EdgeInsets.fromLTRB(20, 30, 20, 0),
               child: TextField(
                 controller: usernameController,
                 keyboardType: TextInputType.text,
@@ -181,8 +201,7 @@ class _LoginSreenState extends State<LoginSreen> {
                   borderRadius: BorderRadius.circular(15),
                   child: Obx(() {
                     return MaterialButton(
-                      color: Colors.amber,
-                      splashColor: Colors.orange,
+                      color: light.primary,
                       onPressed: () async {
                         if (username.isBlank! && password.isBlank!) {
                           setState(() {
@@ -217,18 +236,18 @@ class _LoginSreenState extends State<LoginSreen> {
                             });
                           });
                         } else {
-                          btnState.buttonState.value = 3;
-                          // if (await login(name, city)) {
-                          //   btnState.buttonState.value = 2;
-                          //   Timer(Duration(seconds: 1), () {
-                          //     Get.offAll(() => AllChats());
-                          //   });
-                          // } else {
-                          //   btnState.buttonState.value = 3;
-                          //   Timer(Duration(seconds: 1), () {
-                          //     btnState.buttonState.value = 0;
-                          //   });
-                          // }
+                          btnState.buttonState.value = 1;
+                          if (await login(username, password)) {
+                            btnState.buttonState.value = 2;
+                            Timer(const Duration(seconds: 1), () {
+                              Get.offAll(() => const HomeScreen());
+                            });
+                          } else {
+                            btnState.buttonState.value = 3;
+                            Timer(const Duration(seconds: 1), () {
+                              btnState.buttonState.value = 0;
+                            });
+                          }
                         }
                       },
                       child: Container(
@@ -238,8 +257,8 @@ class _LoginSreenState extends State<LoginSreen> {
                   }),
                 )),
           ],
-        ),
-      )),
+        )),
+      ),
     );
   }
 }

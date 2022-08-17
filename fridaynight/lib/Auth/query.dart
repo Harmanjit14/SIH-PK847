@@ -1,146 +1,133 @@
-// import 'package:Huddle/models/profile.dart';
-// import 'package:Huddle/server/getChats.dart';
-// import 'package:Huddle/server/getLocation.dart';
-// import 'package:Huddle/server/getNear.dart';
-// import "package:graphql/client.dart";
+import 'package:flutter/material.dart';
+import 'package:fridaynight/Auth/model.dart';
+import 'package:fridaynight/degree_data.dart';
+import 'package:fridaynight/server_data.dart';
+import "package:graphql/client.dart";
 
-// String token = "";
-// MyProfile profile = new MyProfile();
+String token = "";
+Student student = Student();
+Institute institute = Institute();
 
-// Future<bool> login(String username, String password) async {
-//   HttpLink _httpLink = HttpLink(
-//     'https://huddle-backend.herokuapp.com/graphql/',
-//   );
+Future<bool> login(String username, String password) async {
+  HttpLink httpLink = HttpLink(
+    url,
+  );
 
-//   AuthLink _authLink = AuthLink(
-//     getToken: () async => 'JWT $token',
-//   );
+  AuthLink authLink = AuthLink(
+    getToken: () async => 'JWT $token',
+  );
 
-//   Link _link = _authLink.concat(_httpLink);
-//   GraphQLClient client = GraphQLClient(
-//     /// **NOTE** The default store is the InMemoryStore, which does NOT persist to disk
-//     cache: GraphQLCache(),
-//     link: _link,
-//   );
+  Link link = authLink.concat(httpLink);
+  GraphQLClient client = GraphQLClient(
+    cache: GraphQLCache(),
+    link: link,
+  );
 
-//   String mutationString = """
-//   mutation{
-//   tokenAuth(username:"$username",password:"$password"){
-//     token
+  String mutationString = """
+  mutation{
+  tokenAuth(username:"$username",password:"$password"){
+    token
    
-//   }
-// }
-// """;
+  }
+}
+""";
 
-//   MutationOptions options = MutationOptions(
-//     document: gql(mutationString),
-//   );
+  MutationOptions options = MutationOptions(
+    document: gql(mutationString),
+  );
 
-//   QueryResult data = await client.mutate(options);
-//   if (data.hasException) {
-//     print(data.exception.toString());
-//     return false;
-//   }
-//   token = data.data["tokenAuth"]["token"];
-//   await getLocation();
-//   await getProfile();
-//   await getChats();
-//   await getNearMe();
-//   return true;
-// }
+  QueryResult data = await client.mutate(options);
 
-// Future<bool> register(String username, String email, String password,
-//     String name, String gender, String city, String state) async {
-//   HttpLink _httpLink = HttpLink(
-//     'https://huddle-backend.herokuapp.com/graphql/',
-//   );
+  if (data.hasException) {
+    debugPrint(data.exception.toString());
+    return false;
+  }
+  token = data.data!["tokenAuth"]["token"];
 
-//   AuthLink _authLink = AuthLink(
-//     getToken: () async => 'JWT $token',
-//   );
+  bool studentStatus = await getStudent();
 
-//   Link _link = _authLink.concat(_httpLink);
-//   GraphQLClient client = GraphQLClient(
-//     /// **NOTE** The default store is the InMemoryStore, which does NOT persist to disk
-//     cache: GraphQLCache(),
-//     link: _link,
-//   );
+  return studentStatus;
+}
 
-//   String mutationString = """
-//    mutation{
-//   createUser(username:"$username",password:"$password",email:"$email",name:"$name",city:"$city",state:"$state",gender:"$gender"){
-//     __typename
-//   }
-// }
-// """;
+Future<bool> getStudent() async {
+  HttpLink httpLink = HttpLink(
+    url,
+  );
 
-//   MutationOptions options = MutationOptions(
-//     document: gql(mutationString),
-//   );
+  AuthLink authLink = AuthLink(
+    getToken: () async => 'JWT $token',
+  );
 
-//   QueryResult data = await client.mutate(options);
-//   if (data.hasException) {
-//     print(data.exception.toString());
-//     return false;
-//   }
-//   if (await login(username, password)) {
-//     return true;
-//   }
-//   return false;
-// }
+  Link link = authLink.concat(httpLink);
+  GraphQLClient client = GraphQLClient(
+    cache: GraphQLCache(),
+    link: link,
+  );
 
-// Future<bool> getProfile() async {
-//   HttpLink _httpLink = HttpLink(
-//     'https://huddle-backend.herokuapp.com/graphql/',
-//   );
+  String queryString = """ 
+{
+  studentLogin{
+    id
+    firstName
+    lastName
+    email
+    roll
+    institute{
+      name
+      logo
+      mail
+      contact
+    }
+    mobile
+    dob
+    degree
+    address
+    batch
+    fatherName
+    motherName
+    graduatingYear
+    wallet
+  }
+}
+""";
 
-//   AuthLink _authLink = AuthLink(
-//     getToken: () async => 'JWT $token',
-//   );
+  QueryOptions options = QueryOptions(
+    document: gql(queryString),
+  );
 
-//   Link _link = _authLink.concat(_httpLink);
-//   GraphQLClient client = GraphQLClient(
-//     /// **NOTE** The default store is the InMemoryStore, which does NOT persist to disk
-//     cache: GraphQLCache(),
-//     link: _link,
-//   );
+  QueryResult data = await client.query(options);
+  if (data.hasException) {
+    debugPrint(data.exception.toString());
+    return false;
+  }
 
-//   String queryString = """
-  
-// {
-//   me{
-//     user{
-//       email
-//     }
-//     city
-//     name
-//     gender
-//     city
-//     state
-//     country
-//     id
-//     image
-//   }
-// }
-// """;
+  // Student Profile
+  var studentData = data.data!['studentLogin'];
+  debugPrint(studentData.toString());
+  student.uid = studentData['id'];
+  student.firstName = studentData['firstName'];
+  student.lastName = studentData['lastName'];
+  student.address = studentData['address'];
+  student.email = studentData['email'];
+  student.mobile = studentData['mobile'];
+  student.dob = studentData['dob'];
+  String deg = studentData['degree'].toString();
+  int degIndex = int.parse(deg[deg.length - 1]);
+  student.degree = degreeList[degIndex];
+  student.batch = studentData['batch'];
+  student.fatherName = studentData['fatherName'];
+  student.motherName = studentData['motherName'];
+  student.graduatingYear = studentData['graduatingYear'];
+  student.wallet = studentData['wallet'];
+  student.roll = studentData['roll'];
+  // student.currentSem = studentData['currentSem'];
 
-//   QueryOptions options = QueryOptions(
-//     document: gql(queryString),
-//   );
-
-//   QueryResult data = await client.query(options);
-//   if (data.hasException) {
-//     print(data.exception.toString());
-//     return false;
-//   }
-//   var profiledata = data.data;
-//   profile.name.value = profiledata["me"]["name"];
-//   profile.email.value = profiledata["me"]["user"]["email"];
-//   profile.city.value = profiledata["me"]["city"];
-//   profile.isFemale.value = (profiledata["me"]["gender"] == "F") ? true : false;
-//   profile.state.value = profiledata["me"]["state"];
-//   profile.country.value = profiledata["me"]["country"];
-//   profile.id.value = profiledata["me"]["id"];
-//   profile.image.value = profiledata["me"]["image"];
-//   return true;
-// }
+  // Institute Data
+  var instituteData = data.data!['studentLogin']['institute'];
+  debugPrint(instituteData.toString());
+  institute.instituteContact = instituteData['contact'];
+  institute.instituteLogo = instituteData['logo'];
+  institute.instituteName = instituteData['name'];
+  institute.instituteMail = instituteData['mail'];
+  return true;
+}

@@ -3,7 +3,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:fridaynight/Auth/view.dart';
 import 'package:get/get.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(const MyApp());
@@ -19,10 +19,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'FridayNight-SIH',
       theme: ThemeData(
-        // useMaterial3: true,
-        splashColor: Colors.amber[700],
-        progressIndicatorTheme: const ProgressIndicatorThemeData(color: Colors.amber),
-        primarySwatch: Colors.amber,
+        useMaterial3: true,
+        colorScheme: const ColorScheme.light(),
       ),
       home: const LoginSreen(),
     );
