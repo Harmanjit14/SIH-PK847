@@ -1,4 +1,13 @@
 
+<<<<<<< HEAD
+
+from importlib.metadata import requires
+from typing_extensions import Required
+
+
+
+=======
+>>>>>>> 2f508ee1097ad3d0ce948f12968aaab699d295c1
 import graphene
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
@@ -51,6 +60,10 @@ class CertificateRequestType(DjangoObjectType):
     class Meta:
         model = Certificate_Requests
 
+class ParticipantsType(DjangoObjectType):
+    class Meta:
+        model = Participants
+
 
 class Query(graphene.ObjectType):
 
@@ -63,8 +76,13 @@ class Query(graphene.ObjectType):
 
     # Institute Portal Queries
     get_all_students = graphene.List(StudentType)
+
+    get_all_sem_subjects = graphene.List(SubjectType, sem=graphene.Int(required=True), degree=graphene.String(required=True), graduating_year=graphene.Int(required=True))
+    get_all_student_participated = graphene.List(ParticipantsType, id=graphene.UUID(required=True))
+
     get_all_sem_subjects = graphene.List(SubjectType, sem=graphene.Int(
         required=True), degree=graphene.String(required=True), graduating_year=graphene.Int(required=True))
+
 
     # Get delivery persons info
     get_delivery_persons = graphene.List(DeliveryUtil)
@@ -246,7 +264,14 @@ class Query(graphene.ObjectType):
 
         return records
 
+<<<<<<< HEAD
+
+
     def resolve_get_all_sem_subjects(self, info, sem, degree, graduating_year):
+
+=======
+    def resolve_get_all_sem_subjects(self, info, sem, degree, graduating_year):
+>>>>>>> 2f508ee1097ad3d0ce948f12968aaab699d295c1
         usr = info.context.user
 
         if usr.is_anonymous:
@@ -261,11 +286,29 @@ class Query(graphene.ObjectType):
 
         return subjects
 
+<<<<<<< HEAD
+    def resolve_get_all_student_participated(self,info,id):
+=======
     def resolve_get_delivery_persons(self, info):
+>>>>>>> 2f508ee1097ad3d0ce948f12968aaab699d295c1
         usr = info.context.user
 
         if usr.is_anonymous:
             raise GraphQLError('Not logged in!')
+<<<<<<< HEAD
+
+        teacher = Teacher.objects.get(user=usr)
+        if teacher == None:
+            raise GraphQLError('Not a valid teacher')
+        
+        student_list= Participants.objects.filter(id=id)
+        return student_list
+
+
+    def resolve_get_delivery_persons(self, info):
+ 
+=======
+>>>>>>> 2f508ee1097ad3d0ce948f12968aaab699d295c1
         manager = Manager.objects.get(user=usr)
 
         if manager == None:
@@ -274,6 +317,10 @@ class Query(graphene.ObjectType):
         records = Delivery.objects.filter(manager=manager)
 
         return records
+<<<<<<< HEAD
+
+=======
+>>>>>>> 2f508ee1097ad3d0ce948f12968aaab699d295c1
 
 
 class CreateUser(graphene.Mutation):

@@ -1,4 +1,5 @@
 
+from datetime import datetime
 from pyexpat import model
 from django.core.validators import MinValueValidator
 from uuid import uuid4
@@ -143,12 +144,22 @@ class Certificate_Requests(models.Model):
         ("4", "Expired"),
         ("5", "Waiting")
     )
+    certificate_choices=(
+        ("0", "Semester Certificate"),
+        ("1", "Migration Certificate"),
+        ("2", "Domicile Certificate"),
+        ("3", "Affadavit"),
+        ("4", "Character Certificate")
+    )
+
 
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     verified = models.BooleanField(default=False)
     delivery_status = models.CharField(
         choices=delivery_choices, default="5", max_length=255, null=False, blank=False)
+    certificate_status = models.CharField(
+        choices=certificate_choices, default="1", max_length=255, null=False, blank=False)
     delivery_manager = models.ForeignKey(
         Manager, null=True, blank=True, on_delete=models.SET_NULL)
     delivery_man = models.ForeignKey(
@@ -156,6 +167,8 @@ class Certificate_Requests(models.Model):
     payment_amount = models.IntegerField(default=0)
     payment_status = models.BooleanField(default=False)
     delivery_done = models.BooleanField(default=False)
+    semester=models.IntegerField(blank=True, null=True)
+    added=models.DateField(auto_now_add=True,null=True)
 
     def __str__(self):
         return f"{self.id}"
@@ -172,3 +185,39 @@ class Payment_Receipt(models.Model):
 
     def __str__(self):
         return f"{self.id}"
+
+
+class Events (models.Model):
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+    event_name=models.CharField(
+        blank=False,null=False, editable=True, max_length=255)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    host_name=models.CharField(blank=True,max_length=255)
+    host_contact=models.CharField(blank=True,max_length=255)
+    event_description=models.TextField(blank=True)
+    event_end=models.BooleanField(null=False,default=False)
+    event_start=models.CharField(blank=True, null=True, editable=True, max_length=255)
+    event_end=models.CharField(blank=True, null=True, editable=True, max_length=255)
+
+
+    def __str__(self):
+        return f'{self.event_name} {self.institute.name}'
+
+class Participants(models.Model):
+    prize_choices = (
+        ("1", "First"),
+        ("2", "Second"),
+        ("3", "Third"),
+        ("4", "Participant"),
+        ("5", "Special Prize")
+       
+    )
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    event=models.ForeignKey(Events, on_delete=models.CASCADE)
+    winner=models.BooleanField(null=True)
+    prize = models.CharField(
+        choices=prize_choices, default="4",max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.event.event_name}'
