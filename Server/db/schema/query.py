@@ -36,7 +36,7 @@ class Query(graphene.ObjectType):
     student_login = graphene.Field(StudentType)
     student_marks = graphene.List(AcadamicRecordsType)
     student_requests = graphene.List(CertificateRequestType)
-    student_participation = graphene.List(EventParticipant)
+    student_participation = graphene.List(ParticipantsType)
     student_prize_participation = graphene.List(ParticipantsType)
 
     def resolve_student_requests(elf, info):
@@ -291,8 +291,8 @@ class Query(graphene.ObjectType):
         if student == None:
             raise GraphQLError('Not a valid teacher')
 
-        student_list = EventParticipant.objects.filter(student=student)
-
+        student_list = EventParticipant.objects.filter(
+            student=student).filter(event__event_ended=False)
         return student_list
 
     def resolve_student_prize_participation(self, info):
