@@ -1,65 +1,12 @@
-
+from .types import *
 import graphene
-from django.contrib.auth.models import User
-from graphene_django import DjangoObjectType
 import os
 from db.utils import *
-from .models import *
+from db.models import *
 from graphql import GraphQLError
-from django.db.models import Q
 from server.settings import EMAIL_HOST_USER
 from django.core.mail import EmailMessage
-from .utils import UploadCSVUtil, get_semester_certifcate_context, get_other_certifcates_context, render_to_pdf
-
-
-class UserType(DjangoObjectType):
-    class Meta:
-        model = User
-
-
-class InstituteType(DjangoObjectType):
-    class Meta:
-        model = Institute
-
-
-class StudentType(DjangoObjectType):
-    class Meta:
-        model = Student
-
-
-class SubjectType(DjangoObjectType):
-    class Meta:
-        model = Semester_subject_registration
-
-
-class AcadamicRecordsType(DjangoObjectType):
-    class Meta:
-        model = Academic_Record
-
-
-class ManagerUtil(DjangoObjectType):
-    class Meta:
-        model = Manager
-
-
-class DeliveryUtil(DjangoObjectType):
-    class Meta:
-        model = Delivery
-
-
-class CertificateRequestType(DjangoObjectType):
-    class Meta:
-        model = Certificate_Requests
-
-
-class ParticipantsType(DjangoObjectType):
-    class Meta:
-        model = Participants
-
-
-class EventType(DjangoObjectType):
-    class Meta:
-        model = Events
+from db.utils import UploadCSVUtil, get_semester_certifcate_context, get_other_certifcates_context, render_to_pdf
 
 
 class Query(graphene.ObjectType):
@@ -72,13 +19,13 @@ class Query(graphene.ObjectType):
     character_certificate = graphene.String()
 
     # Institute Portal Queries
-    get_all_students = graphene.List(StudentType)
-
+    get_all_students = graphene.List(StudentType, degree=graphene.String(
+        required=True), graduating_year=graphene.Int(required=True))
     get_all_sem_subjects = graphene.List(SubjectType, sem=graphene.Int(
         required=True), degree=graphene.String(required=True), graduating_year=graphene.Int(required=True))
     get_all_student_participated = graphene.List(
-        ParticipantsType, id=graphene.UUID(required=True))
-
+        ParticipantsType, id=graphene.String(required=True))
+    get_all_institute_events = graphene.List(EventType)
     get_all_sem_subjects = graphene.List(SubjectType, sem=graphene.Int(
         required=True), degree=graphene.String(required=True), graduating_year=graphene.Int(required=True))
 
@@ -89,6 +36,8 @@ class Query(graphene.ObjectType):
     student_login = graphene.Field(StudentType)
     student_marks = graphene.List(AcadamicRecordsType)
     student_requests = graphene.List(CertificateRequestType)
+    student_participation = graphene.List(EventParticipant)
+    student_prize_participation = graphene.List(ParticipantsType)
 
     def resolve_student_requests(elf, info):
         usr = info.context.user
@@ -100,7 +49,7 @@ class Query(graphene.ObjectType):
         if student == None:
             raise GraphQLError('Not valid Student')
 
-        records = Certificate_Requests.objects.filter(
+        records = Certificate_Request.objects.filter(
             student=student).filter(delivery_done=False)
 
         return records
@@ -246,7 +195,7 @@ class Query(graphene.ObjectType):
 
         return 'Success'
 
-    def resolve_get_all_students(self, info):
+    def resolve_get_all_students(self, info, degree, graduating_year):
         usr = info.context.user
 
         if usr.is_anonymous:
@@ -257,7 +206,7 @@ class Query(graphene.ObjectType):
         if teacher == None:
             raise GraphQLError('Not a valid teacher')
 
-        records = Student.objects.filter(institute=teacher.institute).order_by(
+        records = Student.objects.filter(institute=teacher.institute).filter(graduating_year=graduating_year).filter(degree=degree).order_by(
             '-graduating_year').order_by('degree')
 
         return records
@@ -273,7 +222,7 @@ class Query(graphene.ObjectType):
         if teacher == None:
             raise GraphQLError('Not a valid teacher')
 
-        subjects = Semester_subject_registration.objects.filter(institute=teacher.institute).filter(
+        subjects = Semester_Subject_Registration.objects.filter(institute=teacher.institute).filter(
             graduating_year=graduating_year).filter(semester=sem).filter(degree=degree)
 
         return subjects
@@ -288,21 +237,33 @@ class Query(graphene.ObjectType):
         if teacher == None:
             raise GraphQLError('Not a valid teacher')
 
-        student_list = Participants.objects.filter(id=id)
+        student_list = EventParticipant.objects.filter(id=id)
 
-    def resolve_get_delivery_persons(self, info):
+        return student_list
+
+    def resolve_get_all_institute_events(self, info):
 
         usr = info.context.user
 
         if usr.is_anonymous:
             raise GraphQLError('Not logged in!')
 
-        teacher = Teacher.objects.get(user=usr)
-        if teacher == None:
-            raise GraphQLError('Not a valid teacher')
+        student = Student.objects.get(user=usr).institute
+        teacher = Teacher.objects.get(user=usr).institute
 
-        student_list = Participants.objects.filter(id=id)
-        return student_list
+        if student == None and teacher == None:
+            raise GraphQLError("No Valid Student or Teacher")
+
+        if student != None:
+            event_list = InstituteEvent.objects.filter(
+                institute=student)
+            return event_list
+
+        if teacher != None:
+            event_list = InstituteEvent.objects.filter(
+                institute=teacher)
+            return event_list
+        return []
 
     def resolve_get_delivery_persons(self, info):
 
@@ -320,106 +281,31 @@ class Query(graphene.ObjectType):
 
         return records
 
+    def resolve_student_participation(self, info):
+        usr = info.context.user
 
-class CreateUser(graphene.Mutation):
-    user = graphene.Field(UserType)
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
 
-    class Arguments:
-        username = graphene.String(required=True)
-        password = graphene.String(required=True)
-        email = graphene.String(required=True)
+        student = Student.objects.get(user=usr)
+        if student == None:
+            raise GraphQLError('Not a valid teacher')
 
-    def mutate(self, info, username, password, email, **kwargs):
+        student_list = EventParticipant.objects.filter(student=student)
 
-        if User.objects.get(username=username):
-            raise GraphQLError('User with same username exists')
+        return student_list
 
-        user = User(
-            username=username,
-            email=email,
-        )
-        user.set_password(password)
-        user.save()
+    def resolve_student_prize_participation(self, info):
+        usr = info.context.user
 
-        return CreateUser(user=user)
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
 
+        student = Student.objects.get(user=usr)
+        if student == None:
+            raise GraphQLError('Not a valid teacher')
 
-class DeleteUser(graphene.Mutation):
-    user = graphene.String()
+        student_list = EventParticipant.objects.filter(
+            student=student).filter(winner=True)
 
-    def mutate(self, info):
-        user = info.context.user
-
-        if user.is_anonymous:
-            raise GraphQLError("Not Logged In!")
-
-        user.delete()
-        str = "Done!"
-
-        return DeleteUser(user=str)
-
-
-class UploadStudentMarksCSV(graphene.Mutation):
-
-    success = graphene.String()
-
-    class Arguments:
-        url = graphene.String(required=True)
-        subject = graphene.String(required=True)
-        subject_code = graphene.String(required=True)
-        semester = graphene.Int(required=True)
-        graduating_year = graphene.Int(required=True)
-        credits = graphene.Int(required=True)
-
-    def mutate(self, info, url, subject, semester, graduating_year, subject_code, credits):
-        user = info.context.user
-
-        if user.is_anonymous:
-            raise GraphQLError("Not Logged In!")
-
-        teacher = Teacher.objects.get(user=user)
-
-        if teacher == None:
-            raise GraphQLError("Not a Teacher!")
-
-        institute = teacher.institute
-
-        if Academic_Record.objects.filter(semester=semester).filter(
-                subject=subject).filter(institute=institute).filter(graduating_year=graduating_year).exists():
-            raise GraphQLError('Data for similar fields already exists')
-
-        ret = UploadCSVUtil(url=url, subject=subject, semester=semester,
-                            institute=institute, subject_code=subject_code, batch=graduating_year, credits=credits)
-        return UploadStudentMarksCSV(success=ret)
-
-
-class UploadStudentDataCSV(graphene.Mutation):
-
-    success = graphene.String()
-
-    class Arguments:
-        url = graphene.String(required=True)
-        degree = graphene.String(required=True)
-        graduating_year = graphene.Int(required=True)
-
-    def mutate(self, info, url, degree, graduating_year):
-        user = info.context.user
-
-        if user.is_anonymous:
-            raise GraphQLError("Not Logged In!")
-
-        teacher = Teacher.objects.get(user=user)
-
-        if teacher == None:
-            raise GraphQLError("Not a Teacher!")
-
-        ret = UploadStudentDataUtil(url, teacher, degree, graduating_year)
-
-        return UploadStudentDataCSV(success=ret)
-
-
-class Mutation(graphene.ObjectType):
-    create_user = CreateUser.Field()
-    delete_user = DeleteUser.Field()
-    upload_student_marks_csv = UploadStudentMarksCSV.Field()
-    upload_student_data_csv = UploadStudentDataCSV.Field()
+        return student_list
