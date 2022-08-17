@@ -37,3 +37,12 @@ const List<String> degreeList = [
   'B.E/B.Tech in Geotechnical Engineering',
   'B.E / B.Tech in Nuclear Engineering',
 ];
+
+List<String> delivery_choices = [
+  "Accepted",
+  "Transit",
+  "Delivered",
+  "Failed Attempt",
+  "Expired",
+  "Waiting",
+];

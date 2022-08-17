@@ -26,7 +26,7 @@ CORE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY', 'KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', True)
+DEBUG = bool(int(os.environ.get('DEBUG', 1)))
 
 ALLOWED_HOSTS = ['*']
 
@@ -71,8 +71,8 @@ GRAPHENE = {
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-    "JWT_EXPIRATION_DELTA": timedelta(days=365),  # For "Access Token"
-    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=365),  # For "Refresh Token"
+    "JWT_EXPIRATION_DELTA": timedelta(days=365),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=365),
 }
 
 AUTHENTICATION_BACKENDS = [

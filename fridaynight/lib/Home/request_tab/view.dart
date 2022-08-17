@@ -24,16 +24,16 @@ class _RequestsTabState extends State<RequestsTab> {
                 fontSize: 35,
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
-                shadows: const [Shadow(color: Colors.black, blurRadius: 2)]),
+                shadows: [Shadow(color: Colors.black, blurRadius: 2)]),
           ),
         ),
         GridView.builder(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           shrinkWrap: true,
           itemCount: 6,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 10,
+            crossAxisSpacing: 15,
             mainAxisSpacing: 10,
             childAspectRatio: (1),
           ),
@@ -51,12 +51,23 @@ class _RequestsTabState extends State<RequestsTab> {
                     color: light.primaryContainer,
                     borderRadius: BorderRadius.circular(20)),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: const [
-                    Icon(Icons.abc_sharp),
-                    Text("Item Text",
-                        style: TextStyle(fontSize: 18, color: Colors.black),
-                        textAlign: TextAlign.center),
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: MaterialButton(
+                        elevation: 2,
+                        color: light.background,
+                        // shape: const CircleBorder(),
+                        onPressed: () {},
+                        child: Icon(
+                          Icons.close,
+                          color: light.primary,
+                        ),
+                      ),
+                    ),
+                    Text("Certificate Type: ")
                   ],
                 ),
               ),
