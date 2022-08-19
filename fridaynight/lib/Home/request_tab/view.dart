@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:fridaynight/Home/request_tab/model.dart';
+import 'package:fridaynight/Home/request_tab/query.dart';
 import 'package:fridaynight/utils.dart';
 
 class RequestsTab extends StatefulWidget {
@@ -30,7 +32,7 @@ class _RequestsTabState extends State<RequestsTab> {
         GridView.builder(
           padding: const EdgeInsets.all(20),
           shrinkWrap: true,
-          itemCount: 6,
+          itemCount: requestList!.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 15,
@@ -41,40 +43,67 @@ class _RequestsTabState extends State<RequestsTab> {
             context,
             index,
           ) {
-            return GestureDetector(
-              onTap: () {},
-              child: Container(
-                decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(blurRadius: 2, color: Colors.black),
-                    ],
-                    color: light.primaryContainer,
-                    borderRadius: BorderRadius.circular(20)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: MaterialButton(
-                        elevation: 2,
-                        color: light.background,
-                        // shape: const CircleBorder(),
-                        onPressed: () {},
-                        child: Icon(
-                          Icons.close,
-                          color: light.primary,
-                        ),
-                      ),
-                    ),
-                    Text("Certificate Type: ")
-                  ],
-                ),
-              ),
-            );
+            return requestContainer(requestList![index]);
           },
         ),
       ],
+    );
+  }
+
+  Widget requestContainer(CertificateRequest request) {
+    return Container(
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(blurRadius: 2, color: light.shadow),
+      ], color: light.background, borderRadius: BorderRadius.circular(20)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: light.primary,
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            ),
+            child: Text(
+              request.certificate ?? "",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: light.background,
+                  fontSize: 16,
+                  shadows: const [Shadow()]),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                if (!request.accepted!)
+                  const Text(
+                    "Your Certificate request is currently not accepted by Institute, sit back and relax we have informed them.",
+                    textAlign: TextAlign.justify,
+                  ),
+                // Text(
+                //   "Payment Rs.${request.paymentAmount!}",
+                //   textAlign: TextAlign.justify,
+                //   style: const TextStyle(
+                //       fontWeight: FontWeight.bold, fontSize: 16),
+                // ),
+                Text(
+                  "Status: ${request.status!}",
+                  textAlign: TextAlign.justify,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 16),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
