@@ -45,6 +45,39 @@ class DeleteUser(graphene.Mutation):
 
         return DeleteUser(user=str)
 
+class Add_Certificate_Request(graphene.Mutation):
+    certificate_Request= graphene.Field(CertificateRequestType)
+
+    class Arguments:
+        semester=graphene.Int()
+        certificate=graphene.String(required=True)
+        
+       
+
+    def mutate(self, info, **kwargs):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError("Not Logged In!")
+
+        student = Student.objects.get(user=user)
+
+        if student == None:
+            raise GraphQLError("Not a valid Student!")
+        
+        ret=Certificate_Request(
+            certificate_status=kwargs.get('certificate'),
+            student=student,
+            semester=kwargs.get('semester')
+
+
+        )
+        ret.save()
+
+        
+
+        return Add_Certificate_Request(certificate_Request=ret)
+
 
 class UploadStudentMarksCSV(graphene.Mutation):
 
@@ -150,3 +183,4 @@ class Mutation(graphene.ObjectType):
     upload_student_marks_csv = UploadStudentMarksCSV.Field()
     upload_student_data_csv = UploadStudentDataCSV.Field()
     add_new_institute_event = AddEventInformation.Field()
+    certificate_Request=Add_Certificate_Request.Field()
