@@ -38,11 +38,20 @@ const List<String> degreeList = [
   'B.E / B.Tech in Nuclear Engineering',
 ];
 
-List<String> delivery_choices = [
+const List<String> delivery_choices = [
   "Accepted",
   "Transit",
   "Delivered",
   "Failed Attempt",
   "Expired",
   "Waiting",
+  "Rejected",
+];
+
+const List<String> certificate_choices = [
+  "Semester Certificate",
+  "Migration Certificate",
+  "Domicile Certificate",
+  "Affadavit",
+  "Character Certificate",
 ];

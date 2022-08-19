@@ -30,6 +30,7 @@ Future<bool> getStudentRequest() async {
     deliveryStatus
     verified
     deliveryDone
+    certificateStatus
   }
 }
 """;
@@ -47,6 +48,7 @@ Future<bool> getStudentRequest() async {
   // Student Request Data
   List requestDataList = data.data!['studentRequests'];
   debugPrint(requestDataList.toString());
+  debugPrint(requestDataList.length.toString());
   for (var i = 0; i < requestDataList.length; i++) {
     var dataMap = requestDataList[i];
     var obj = CertificateRequest();
