@@ -46,9 +46,8 @@ Future<bool> login(String username, String password) async {
   token = data.data!["tokenAuth"]["token"];
 
   bool studentStatus = await getStudent();
-  bool requestListStatus = await getStudentRequest();
 
-  return studentStatus && requestListStatus;
+  return studentStatus;
 }
 
 Future<bool> getStudent() async {

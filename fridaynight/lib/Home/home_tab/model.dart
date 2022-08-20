@@ -1,6 +1,21 @@
-class certiCheck {
-  String certi;
-  String status;
+class InstituteEvent {
+  String? id,
+      eventName,
+      startDate,
+      endDate,
+      overview,
+      description,
+      hostName,
+      hostContact;
 
-  certiCheck({required this.certi, required this.status});
+  fromJson(var data) {
+    id = data['id'];
+    hostContact = data['hostContact'];
+    hostName = data['hostName'];
+    overview = data['eventOverview'];
+    description = data['eventDescription'];
+    eventName = data['eventName'];
+    startDate = data['startDate'];
+    endDate = data['endDate'];
+  }
 }

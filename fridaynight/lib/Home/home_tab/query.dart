@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fridaynight/Auth/query.dart';
-import 'package:fridaynight/Home/request_tab/model.dart';
+import 'package:fridaynight/Home/home_tab/model.dart';
 import 'package:fridaynight/server_data.dart';
 import 'package:graphql/client.dart';
 
-Future<List<CertificateRequest>> getStudentRequest() async {
-  List<CertificateRequest>? requestList = [];
-
+Future<List<InstituteEvent>> getInstituteEvents() async {
+  List<InstituteEvent> list = [];
   HttpLink httpLink = HttpLink(
     url,
   );
@@ -23,21 +22,22 @@ Future<List<CertificateRequest>> getStudentRequest() async {
 
   String queryString = """ 
 {
-  studentRequests{
+  getAllInstituteEvents{
     id
-    paymentAmount
-    paymentStatus
-    deliveryStatus
-    verified
-    deliveryDone
-    certificateStatus
+    eventName
+    startDate
+    endDate
+    eventOverview
+    eventDescription
+    hostName
+    hostContact
   }
 }
 """;
 
   QueryOptions options = QueryOptions(
     document: gql(queryString),
-    fetchPolicy: FetchPolicy.cacheFirst
+    fetchPolicy: FetchPolicy.cacheFirst,
   );
 
   QueryResult data = await client.query(options);
@@ -47,15 +47,13 @@ Future<List<CertificateRequest>> getStudentRequest() async {
   }
 
   // Student Request Data
-  List requestDataList = data.data!['studentRequests'];
-  debugPrint(requestDataList.toString());
-  debugPrint(requestDataList.length.toString());
-  for (var i = 0; i < requestDataList.length; i++) {
-    var dataMap = requestDataList[i];
-    var obj = CertificateRequest();
+  List eventList = data.data!['getAllInstituteEvents'];
+  for (var i = 0; i < eventList.length; i++) {
+    var dataMap = eventList[i];
+    var obj = InstituteEvent();
     obj.fromJson(dataMap);
-    requestList.add(obj);
+    list.add(obj);
   }
 
-  return requestList;
+  return list;
 }
