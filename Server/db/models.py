@@ -139,7 +139,8 @@ class Certificate_Request(models.Model):
         ("2", "Delivered"),
         ("3", "Failed Attempt"),
         ("4", "Expired"),
-        ("5", "Waiting")
+        ("5", "Waiting"),
+        ("6", "Rejected"),
     )
     certificate_choices = (
         ("0", "Semester Certificate"),

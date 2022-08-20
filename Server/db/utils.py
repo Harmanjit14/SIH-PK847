@@ -1,13 +1,10 @@
 
 from io import BytesIO
-import random
-from unicodedata import name
 from xhtml2pdf import pisa
 from django.template.loader import get_template
 import pandas as pd
-from .models import Academic_Record, Institute, Student
+from .models import Academic_Record, Student
 from .degree_data import degree_list
-from datetime import datetime
 from django.contrib.auth.models import User
 
 
@@ -49,7 +46,7 @@ def get_semester_certifcate_context(student, semester):
     rec = Academic_Record.objects.filter(
         student=student).filter(semester=semester)
     l = []
-    context['name'] = student.name
+    context['name'] = student.first_name+student.last_name
     context['fname'] = student.father_name
     context['mname'] = student.mother_name
     context['roll'] = student.roll
@@ -84,7 +81,7 @@ def get_other_certifcates_context(student):
     context = {
         'error': False,
     }
-    context['name'] = student.name
+    context['name'] = student.first_name+student.last_name
     context['fname'] = student.father_name
     context['mname'] = student.mother_name
     context['roll'] = student.roll
