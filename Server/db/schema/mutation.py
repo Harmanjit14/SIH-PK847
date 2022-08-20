@@ -1,3 +1,4 @@
+from atexit import register
 from .types import *
 
 import graphene
@@ -44,6 +45,59 @@ class DeleteUser(graphene.Mutation):
         str = "Done!"
 
         return DeleteUser(user=str)
+
+class RegisterInEvent(graphene.Mutation):
+    register_in_event=graphene.Field(ParticipantsType)
+
+    class Arguments:
+        id=graphene.String()
+    
+    def mutate(self, info, id):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError("Not Logged In!")
+
+        student = Student.objects.get(user=user)
+        event=InstituteEvent.objects.get(id=id)
+
+        if student == None:
+            raise GraphQLError("Not a valid Student!")
+
+        ret=EventParticipant.objects.get_or_create(event=event, student=student)
+        
+
+        return RegisterInEvent(register_in_event=ret)
+
+
+
+class DeleteParticiaption(graphene.Mutation):
+    deleteParticipant=graphene.String()
+
+    class Arguments:
+        id=graphene.String()
+    
+    def mutate(self,info,id):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError("Not Logged In!")
+
+        student = Student.objects.get(user=user)
+        participant=EventParticipant.objects.get(id=id)
+
+        if student == None:
+            raise GraphQLError("Not a valid Student!")
+        
+        participant.delete()
+        str="Done!"
+
+        return DeleteParticiaption(deleteParticipant=str)
+
+
+        
+
+
 
 class Add_Certificate_Request(graphene.Mutation):
     certificate_Request= graphene.Field(CertificateRequestType)
@@ -184,3 +238,5 @@ class Mutation(graphene.ObjectType):
     upload_student_data_csv = UploadStudentDataCSV.Field()
     add_new_institute_event = AddEventInformation.Field()
     certificate_Request=Add_Certificate_Request.Field()
+    register_participant=RegisterInEvent.Field()
+    delete_participant=DeleteParticiaption.Field()
