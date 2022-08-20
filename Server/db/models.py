@@ -201,7 +201,7 @@ class InstituteEvent (models.Model):
         blank=False, null=True, editable=True, max_length=255)
 
     def __str__(self):
-        return f'{self.event_name} {self.institute.name}'
+        return f'{self.id} {self.event_name} {self.institute.name}'
 
 
 class EventParticipant(models.Model):

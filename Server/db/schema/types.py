@@ -52,3 +52,5 @@ class ParticipantsType(DjangoObjectType):
 class EventType(DjangoObjectType):
     class Meta:
         model = InstituteEvent
+
+
