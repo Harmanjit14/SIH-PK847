@@ -54,4 +54,5 @@ const List<String> certificate_choices = [
   "Domicile Certificate",
   "Affadavit",
   "Character Certificate",
+  "Event",
 ];

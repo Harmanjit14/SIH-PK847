@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fridaynight/Auth/query.dart';
 import 'package:fridaynight/Home/home_tab/model.dart';
 import 'package:fridaynight/Home/home_tab/query.dart';
 import 'package:fridaynight/utils.dart';
@@ -115,6 +117,63 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget participationContainer(StudentParticipation obj) {
+    Future<void> _showCertificateRequestDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: true, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(obj.eventName ?? ""),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: const <Widget>[
+                  Text(
+                      'Do you want to request certificate for your participation? Please select from below options, If hardcopy selected you will be charged Rs. 30 for safe delivery from your student wallet.'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                shape: const StadiumBorder(),
+                elevation: 0,
+                color: light.primary,
+                onPressed: () {
+                  requestCertificate("5", false, eventId: obj.eventId);
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'E-Certificate',
+                  style: TextStyle(color: light.background),
+                ),
+              ),
+              MaterialButton(
+                shape: const StadiumBorder(),
+                elevation: 0,
+                color: light.primary,
+                onPressed: () async {
+                  if (student.wallet! < 30) {
+                    await Fluttertoast.showToast(
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        msg:
+                            "Maintain minimum balance of Rs. 30 in your studdent wallet to proceed.");
+                    return;
+                  }
+
+                  requestCertificate("5", false, eventId: obj.eventId);
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'Hardcopy',
+                  style: TextStyle(color: light.background),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
@@ -152,7 +211,9 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(0),
             minWidth: 70,
             height: double.maxFinite,
-            onPressed: () {},
+            onPressed: () {
+              _showCertificateRequestDialog();
+            },
             child: Container(
               height: double.maxFinite,
               width: 70,
@@ -211,7 +272,7 @@ class _HomePageState extends State<HomePage> {
     String month = getMonth(int.parse(event.startDate!.split("/")[1]));
     String year = event.startDate!.split("/")[2];
 
-    Future<void> _showMyDialog() async {
+    Future<void> _showEventParticipationDialog() async {
       return showDialog<void>(
         context: context,
         barrierDismissible: true, // user must tap button!
@@ -233,12 +294,13 @@ class _HomePageState extends State<HomePage> {
                 elevation: 0,
                 color: Colors.green,
                 onPressed: () {
-                  registerEvent(event.id??"");
+                  registerEvent(event.id ?? "");
                   Navigator.pop(context);
                 },
-                child:  Text('Register',style: TextStyle(
-                  color: light.background
-                ),),
+                child: Text(
+                  'Register',
+                  style: TextStyle(color: light.background),
+                ),
               ),
               MaterialButton(
                 shape: const StadiumBorder(),
@@ -247,9 +309,10 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child:  Text('No',style: TextStyle(
-                  color: light.background
-                ),),
+                child: Text(
+                  'No',
+                  style: TextStyle(color: light.background),
+                ),
               ),
             ],
           );
@@ -264,7 +327,7 @@ class _HomePageState extends State<HomePage> {
         BoxShadow(blurRadius: 3, spreadRadius: -1, color: light.shadow),
       ], color: light.background, borderRadius: BorderRadius.circular(20)),
       child: MaterialButton(
-        onPressed: _showMyDialog,
+        onPressed: _showEventParticipationDialog,
         padding: const EdgeInsets.all(0),
         child: Row(
           mainAxisSize: MainAxisSize.max,

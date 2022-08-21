@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fridaynight/Auth/query.dart';
 import 'package:fridaynight/server_data.dart';
 import 'package:graphql/client.dart';
@@ -32,7 +33,7 @@ Future<bool> requestCertificate(String certificateId, bool hardcopy,
   } else if (certificateId == "1") {
     mutationString = """
   mutation{
-  certificateRequest(certificate:"1",hardcopy =$hardcopy ,){
+  certificateRequest(certificate:"1",hardcopy: $hardcopy){
     __typename
   }
 }
@@ -40,12 +41,25 @@ Future<bool> requestCertificate(String certificateId, bool hardcopy,
   } else if (certificateId == "4") {
     mutationString = """
   mutation{
-  certificateRequest(certificate:"4",hardcopy =$hardcopy ,){
+  certificateRequest(certificate:"4",hardcopy: $hardcopy){
+    __typename
+  }
+}
+""";
+  } else if (certificateId == "5") {
+    mutationString = """
+  mutation{
+  certificateRequest(certificate:"5",hardcopy: $hardcopy,eventId:"${eventId}" ){
     __typename
   }
 }
 """;
   } else {
+    await Fluttertoast.showToast(
+      msg: "Unable to create new Certificate Request",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+    );
     return false;
   }
 
@@ -57,7 +71,18 @@ Future<bool> requestCertificate(String certificateId, bool hardcopy,
 
   if (data.hasException) {
     debugPrint(data.exception.toString());
+    await Fluttertoast.showToast(
+      msg: "Unable to create new Certificate Request",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+    );
     return false;
   }
+
+  await Fluttertoast.showToast(
+    msg: "Certificate Request Sent Successfully",
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+  );
   return true;
 }
