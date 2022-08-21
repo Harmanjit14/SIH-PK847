@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fridaynight/Auth/query.dart';
 import 'package:fridaynight/Home/home_tab/model.dart';
 import 'package:fridaynight/server_data.dart';
@@ -83,9 +84,7 @@ Future<Map<String, List<dynamic>>> getInstituteEvents() async {
   return map;
 }
 
-
-Future<bool> registerEvent() async {
-
+Future<bool> registerEvent(String eventId) async {
   HttpLink httpLink = HttpLink(
     url,
   );
@@ -99,42 +98,35 @@ Future<bool> registerEvent() async {
     cache: GraphQLCache(),
     link: link,
   );
-
+debugPrint(eventId);
   String mutationString = """ 
-{
-  getAllInstituteEvents{
-    id
-    eventName
-    startDate
-    endDate
-    eventOverview
-    eventDescription
-    hostName
-    hostContact
-  }
-
-  studentParticipation{
-    id
-    event{
-      id
-      eventName
-    }
+mutation{
+  registerParticipant(id:"${eventId}"){
+    __typename
   }
 }
 """;
 
-  QueryOptions options = QueryOptions(
-    document: gql(queryString),
-    fetchPolicy: FetchPolicy.cacheFirst,
+  MutationOptions options = MutationOptions(
+    document: gql(mutationString),
   );
 
-  QueryResult data = await client.query(options);
+  QueryResult data = await client.mutate(options);
+
   if (data.hasException) {
     debugPrint(data.exception.toString());
-    return map;
+    await Fluttertoast.showToast(
+      msg: "Failed to Register, Please try after sometime!", // message
+      toastLength: Toast.LENGTH_SHORT, // length
+      gravity: ToastGravity.BOTTOM, // placemnent
+    );
+    return false;
   }
+  await Fluttertoast.showToast(
+    msg: "Registeration Successful", // message
+    toastLength: Toast.LENGTH_SHORT, // length
+    gravity: ToastGravity.BOTTOM, // placemnent
+  );
 
-  // Student Request Data
-  List eventList = data.data!['getAllInstituteEvents'];
-
+  return true;
 }

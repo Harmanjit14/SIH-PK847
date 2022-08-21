@@ -31,7 +31,7 @@ class _RequestsTabState extends State<RequestsTab> {
               List<CertificateRequest>? requestList = snapshot.data;
               if (requestList!.isEmpty) {
                 return const Center(
-                  child: Text("Error getting data"),
+                  child: Text("No Requests so far.."),
                 );
               }
               return ListView(

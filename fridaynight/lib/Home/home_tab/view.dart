@@ -233,7 +233,8 @@ class _HomePageState extends State<HomePage> {
                 elevation: 0,
                 color: Colors.green,
                 onPressed: () {
-                  
+                  registerEvent(event.id??"");
+                  Navigator.pop(context);
                 },
                 child:  Text('Register',style: TextStyle(
                   color: light.background

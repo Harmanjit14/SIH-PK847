@@ -72,6 +72,7 @@ Future<bool> getStudent() async {
     firstName
     lastName
     email
+    currentSemester
     roll
     institute{
       name
@@ -121,7 +122,7 @@ Future<bool> getStudent() async {
   student.graduatingYear = studentData['graduatingYear'];
   student.wallet = studentData['wallet'];
   student.roll = studentData['roll'];
-  // student.currentSem = studentData['currentSem'];
+  student.currentSem = studentData['currentSemester'];
 
   // Institute Data
   var instituteData = data.data!['studentLogin']['institute'];
