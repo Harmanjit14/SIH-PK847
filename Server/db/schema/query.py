@@ -32,6 +32,9 @@ class Query(graphene.ObjectType):
     get_all_institute_events = graphene.List(EventType)
     get_all_sem_subjects = graphene.List(SubjectType, sem=graphene.Int(
         required=True), degree=graphene.String(required=True), graduating_year=graphene.Int(required=True))
+    get_all_sem_subjects_for_students = graphene.List(SubjectType, sem=graphene.Int(
+        required=True), degree=graphene.String(required=True), graduating_year=graphene.Int(required=True))
+    get_all_sem_grades_for_students=graphene.List(AcadamicRecordsType, sem=graphene.Int(required=True))
     get_all_request = graphene.List(CertificateRequestType)
     get_all_manager = graphene.List(ManagerUtil)
 
@@ -530,3 +533,35 @@ class Query(graphene.ObjectType):
         manager_list = Manager.objects.all()
 
         return manager_list
+
+    def resolve_get_all_sem_subjects_for_students(self, info, sem, degree, graduating_year):
+
+        usr = info.context.user
+
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        student = Student.objects.get(user=usr)
+        if student == None:
+            raise GraphQLError('Not a valid student!')
+
+        subjects = Semester_Subject_Registration.objects.filter(institute=student.institute).filter(
+            graduating_year=graduating_year).filter(semester=sem).filter(degree=degree)
+
+        return subjects
+
+    def resolve_get_all_sem_grades_for_students(self, info , sem):
+        usr = info.context.user
+
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        student = Student.objects.get(user=usr)
+        if student == None:
+            raise GraphQLError('Not a valid student!')
+        
+        grades=Academic_Record.objects.filter(institute=student.institute).filter(semester=sem)
+
+        return grades
+
+
