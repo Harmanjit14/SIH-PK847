@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fridaynight/Home/home_tab/model.dart';
@@ -16,7 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<InstituteEvent>>(
+    return FutureBuilder<Map<String, List<dynamic>>>(
       future: getInstituteEvents(),
       builder: ((context, snapshot) {
         switch (snapshot.connectionState) {
@@ -29,8 +27,12 @@ class _HomePageState extends State<HomePage> {
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else {
-              List<InstituteEvent>? list = snapshot.data;
-              if (list!.isEmpty) {
+              List<InstituteEvent>? list =
+                  snapshot.data!['instituteEvent']!.cast<InstituteEvent>();
+              List<StudentParticipation>? list2 = snapshot
+                  .data!['studentParticipation']!
+                  .cast<StudentParticipation>();
+              if (list.isEmpty && list2.isEmpty) {
                 return const Center(
                   child: Text("Error getting data"),
                 );
@@ -41,33 +43,35 @@ class _HomePageState extends State<HomePage> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text(
-                      "Exciting Events",
-                      style: TextStyle(
-                          fontSize: 30,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          shadows: [
-                            Shadow(color: Colors.black, blurRadius: 2)
-                          ]),
+                  if (list.isNotEmpty)
+                    const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        "Exciting Events",
+                        style: TextStyle(
+                            fontSize: 30,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(color: Colors.black, blurRadius: 2)
+                            ]),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height / 5,
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(10),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: list.length,
-                      itemBuilder: ((context, index) {
-                        return eventCard(list[index]);
-                      }),
+                  if (list.isNotEmpty)
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 5,
+                      width: MediaQuery.of(context).size.width,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(10),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: list.length,
+                        itemBuilder: ((context, index) {
+                          return eventCard(list[index]);
+                        }),
+                      ),
                     ),
-                  ),
-                  if (true)
+                  if (list2.isNotEmpty)
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,9 +97,9 @@ class _HomePageState extends State<HomePage> {
                             child: ListView.builder(
                               padding: const EdgeInsets.all(10),
                               shrinkWrap: true,
-                              itemCount: 3,
+                              itemCount: list2.length,
                               itemBuilder: ((context, index) {
-                                return participationContainer();
+                                return participationContainer(list2[index]);
                               }),
                             ),
                           ),
@@ -110,7 +114,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget participationContainer() {
+  Widget participationContainer(StudentParticipation obj) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
@@ -133,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                 child: Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Text(
-                    "Event Name",
+                    obj.eventName ?? "Event Name",
                     style: const TextStyle(
                         shadows: [Shadow()],
                         fontSize: 18,
@@ -142,23 +146,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Prize",
-                      style: const TextStyle(
-                          shadows: [Shadow()],
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600),
-                      maxLines: 3,
-                    ),
-                  ],
-                ),
-              )
             ],
           )),
           MaterialButton(
@@ -223,111 +210,163 @@ class _HomePageState extends State<HomePage> {
     String day = event.startDate!.split("/")[0];
     String month = getMonth(int.parse(event.startDate!.split("/")[1]));
     String year = event.startDate!.split("/")[2];
+
+    Future<void> _showMyDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: true, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(event.eventName ?? ""),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Overview- ${event.overview}'),
+                  Text('Decription- ${event.description}'),
+                  Text('Dates- ${event.startDate}-${event.startDate}'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                shape: const StadiumBorder(),
+                elevation: 0,
+                color: Colors.green,
+                onPressed: () {
+                  
+                },
+                child:  Text('Register',style: TextStyle(
+                  color: light.background
+                ),),
+              ),
+              MaterialButton(
+                shape: const StadiumBorder(),
+                elevation: 0,
+                color: Colors.red,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child:  Text('No',style: TextStyle(
+                  color: light.background
+                ),),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return Container(
       margin: const EdgeInsets.only(right: 15),
       width: MediaQuery.of(context).size.width * 0.8,
       decoration: BoxDecoration(boxShadow: [
         BoxShadow(blurRadius: 3, spreadRadius: -1, color: light.shadow),
       ], color: light.background, borderRadius: BorderRadius.circular(20)),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            decoration: BoxDecoration(
-              color: light.primary,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                bottomLeft: Radius.circular(20),
-              ),
-            ),
-            child: Center(
-                child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 65,
-                  child: Text(
-                    day,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0,
-                      shadows: const [
-                        Shadow(
-                          color: Colors.black,
-                          blurRadius: 2,
-                        )
-                      ],
-                      fontSize: 60,
-                      color: light.background,
-                    ),
-                  ),
+      child: MaterialButton(
+        onPressed: _showMyDialog,
+        padding: const EdgeInsets.all(0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.3,
+              decoration: BoxDecoration(
+                color: light.primary,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  bottomLeft: Radius.circular(20),
                 ),
-                SizedBox(
-                  height: 33,
-                  child: Text(
-                    month,
-                    style: TextStyle(
+              ),
+              child: Center(
+                  child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 65,
+                    child: Text(
+                      day,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0,
                         shadows: const [
                           Shadow(
                             color: Colors.black,
                             blurRadius: 2,
                           )
                         ],
-                        fontSize: 30,
-                        letterSpacing: 3,
-                        fontWeight: FontWeight.w900,
+                        fontSize: 60,
+                        color: light.background,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 33,
+                    child: Text(
+                      month,
+                      style: TextStyle(
+                          shadows: const [
+                            Shadow(
+                              color: Colors.black,
+                              blurRadius: 2,
+                            )
+                          ],
+                          fontSize: 30,
+                          letterSpacing: 3,
+                          fontWeight: FontWeight.w900,
+                          color: light.background),
+                    ),
+                  ),
+                  Text(
+                    year,
+                    style: TextStyle(
+                        fontSize: 17,
+                        letterSpacing: 8,
                         color: light.background),
                   ),
-                ),
-                Text(
-                  year,
-                  style: TextStyle(
-                      fontSize: 17, letterSpacing: 8, color: light.background),
-                ),
-              ],
-            )),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Text(
-                    event.eventName ?? "",
-                    style: const TextStyle(
-                        shadows: [Shadow()],
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                    maxLines: 3,
-                  ),
-                  Text(
-                    "Hosted By- ${event.hostName}",
-                    style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 10,
-                        fontWeight: FontWeight.normal),
-                    maxLines: 3,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "About- ${event.overview}",
-                    style: TextStyle(
-                        color: Colors.grey[800],
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal),
-                    maxLines: 3,
-                  ),
                 ],
+              )),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text(
+                      event.eventName ?? "",
+                      style: const TextStyle(
+                          shadows: [Shadow()],
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                      maxLines: 3,
+                    ),
+                    Text(
+                      "Hosted By- ${event.hostName}",
+                      style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 10,
+                          fontWeight: FontWeight.normal),
+                      maxLines: 3,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "About- ${event.overview}",
+                      style: TextStyle(
+                          color: Colors.grey[800],
+                          fontSize: 12,
+                          fontWeight: FontWeight.normal),
+                      maxLines: 3,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

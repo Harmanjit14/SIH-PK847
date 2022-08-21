@@ -46,12 +46,13 @@ class DeleteUser(graphene.Mutation):
 
         return DeleteUser(user=str)
 
+
 class RegisterInEvent(graphene.Mutation):
-    register_in_event=graphene.Field(ParticipantsType)
+    register_in_event = graphene.Field(ParticipantsType)
 
     class Arguments:
-        id=graphene.String()
-    
+        id = graphene.String()
+
     def mutate(self, info, id):
         user = info.context.user
 
@@ -59,54 +60,47 @@ class RegisterInEvent(graphene.Mutation):
             raise GraphQLError("Not Logged In!")
 
         student = Student.objects.get(user=user)
-        event=InstituteEvent.objects.get(id=id)
+        event = InstituteEvent.objects.get(id=id)
 
         if student == None:
             raise GraphQLError("Not a valid Student!")
 
-        ret=EventParticipant.objects.get_or_create(event=event, student=student)
-        
+        ret = EventParticipant.objects.get_or_create(
+            event=event, student=student)
 
         return RegisterInEvent(register_in_event=ret)
 
 
-
 class DeleteParticiaption(graphene.Mutation):
-    deleteParticipant=graphene.String()
+    deleteParticipant = graphene.String()
 
     class Arguments:
-        id=graphene.String()
-    
-    def mutate(self,info,id):
+        id = graphene.String()
+
+    def mutate(self, info, id):
         user = info.context.user
 
         if user.is_anonymous:
             raise GraphQLError("Not Logged In!")
 
         student = Student.objects.get(user=user)
-        participant=EventParticipant.objects.get(id=id)
+        participant = EventParticipant.objects.get(id=id)
 
         if student == None:
             raise GraphQLError("Not a valid Student!")
-        
+
         participant.delete()
-        str="Done!"
+        str = "Done!"
 
         return DeleteParticiaption(deleteParticipant=str)
 
 
-        
-
-
-
 class Add_Certificate_Request(graphene.Mutation):
-    certificate_Request= graphene.Field(CertificateRequestType)
+    certificate_Request = graphene.Field(CertificateRequestType)
 
     class Arguments:
-        semester=graphene.Int()
-        certificate=graphene.String(required=True)
-        
-       
+        semester = graphene.Int()
+        certificate = graphene.String(required=True)
 
     def mutate(self, info, **kwargs):
         user = info.context.user
@@ -118,8 +112,8 @@ class Add_Certificate_Request(graphene.Mutation):
 
         if student == None:
             raise GraphQLError("Not a valid Student!")
-        
-        ret=Certificate_Request(
+
+        ret = Certificate_Request(
             certificate_status=kwargs.get('certificate'),
             student=student,
             semester=kwargs.get('semester')
@@ -127,8 +121,6 @@ class Add_Certificate_Request(graphene.Mutation):
 
         )
         ret.save()
-
-        
 
         return Add_Certificate_Request(certificate_Request=ret)
 
@@ -230,6 +222,31 @@ class AddEventInformation(graphene.Mutation):
 
         return AddEventInformation(event=ret)
 
+class UpdateDeliveryStatus(graphene.Mutation):
+
+    requestStatus = graphene.Field(CertificateRequestType)
+
+    class Arguments:
+        id = graphene.String(required=True)
+        status_code = graphene.String(required=True)
+
+    def mutate(self, info, id, status_code):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError("Not Logged In!")
+
+        teacher = Teacher.objects.get(user=user)
+
+        if teacher == None:
+            raise GraphQLError("Not a Teacher!")
+
+        req = Certificate_Request.objects.get(id=id)
+        req.delivery_status= status_code
+        req.save()
+
+        return UpdateDeliveryStatus(requestStatus=req)
+
 
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
@@ -237,6 +254,7 @@ class Mutation(graphene.ObjectType):
     upload_student_marks_csv = UploadStudentMarksCSV.Field()
     upload_student_data_csv = UploadStudentDataCSV.Field()
     add_new_institute_event = AddEventInformation.Field()
-    certificate_Request=Add_Certificate_Request.Field()
-    register_participant=RegisterInEvent.Field()
-    delete_participant=DeleteParticiaption.Field()
+    certificate_Request = Add_Certificate_Request.Field()
+    register_participant = RegisterInEvent.Field()
+    delete_participant = DeleteParticiaption.Field()
+    update_delivery = UpdateDeliveryStatus.Field()

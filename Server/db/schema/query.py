@@ -36,6 +36,7 @@ class Query(graphene.ObjectType):
 
     # Get delivery persons info
     get_delivery_persons = graphene.List(DeliveryUtil)
+    get_manager_request = graphene.List(CertificateRequestType)
 
     # Flutter App Queries
     student_login = graphene.Field(StudentType)
@@ -57,7 +58,7 @@ class Query(graphene.ObjectType):
             raise GraphQLError('Not valid Student')
 
         records = Certificate_Request.objects.filter(
-            student=student).filter(delivery_done=False)
+            student=student).filter(verified=False).filter(delivery_done=False)
 
         return records
 
@@ -354,7 +355,13 @@ class Query(graphene.ObjectType):
                 mail.attach_file(location)
                 mail.send()
                 os.remove(location)
-                req.delete()
+                if req.hardcopy_requested == True:
+                    req.verified = True
+                    req.delivery_status = "0"
+                    req.save()
+                else:
+                    req.delete()
+
             except Exception as e:
                 # raise GraphQLError(str(e))
                 print(e)
@@ -381,7 +388,12 @@ class Query(graphene.ObjectType):
                 mail.attach_file(location)
                 mail.send()
                 os.remove(location)
-                req.delete()
+                if req.hardcopy_requested == True:
+                    req.verified = True
+                    req.delivery_status = "0"
+                    req.save()
+                else:
+                    req.delete()
             except Exception as e:
                 return str(e)
 
@@ -406,7 +418,12 @@ class Query(graphene.ObjectType):
                 mail.attach_file(location)
                 mail.send()
                 os.remove(location)
-                req.delete()
+                if req.hardcopy_requested == True:
+                    req.verified = True
+                    req.delivery_status = "0"
+                    req.save()
+                else:
+                    req.delete()
             except Exception as e:
                 # raise GraphQLError(str(e))
                 print(e)
@@ -457,13 +474,17 @@ class Query(graphene.ObjectType):
             raise GraphQLError('Not logged in!')
 
         student = Student.objects.get(user=usr)
-        if teacher == None:
+        if student == None:
             raise GraphQLError('Not a valid Student')
 
-        l = Certificare_Request.objects.filter(
-            student=student).filter(delivery_done=False)
+        req = Certificate_Request.objects.get(id=id)
 
-        return l
+        if req == None:
+            raise GraphQLError('Not a valid Request')
+
+        req.delete()
+
+        return "Success"
 
     def resolve_get_all_request(self, info):
         usr = info.context.user
@@ -477,5 +498,20 @@ class Query(graphene.ObjectType):
 
         l = Certificate_Request.objects.filter(
             student__institute=teacher.institute).filter(delivery_done=False)
+
+        return l
+
+    def resolve_get_manager_request(self, info):
+        usr = info.context.user
+
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        manager = Manager.objects.get(user=usr)
+        if manager == None:
+            raise GraphQLError('Not a valid Manager')
+
+        l = Certificate_Request.objects.filter(
+            verified=True).filter(delivery_done=False)
 
         return l

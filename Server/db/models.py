@@ -166,6 +166,7 @@ class Certificate_Request(models.Model):
     delivery_done = models.BooleanField(default=False)
     semester = models.IntegerField(blank=True, null=True)
     added = models.DateField(auto_now_add=True, null=True)
+    hardcopy_requested = models.BooleanField(default=False, null=True)
 
     def __str__(self):
         return f"{self.id}"

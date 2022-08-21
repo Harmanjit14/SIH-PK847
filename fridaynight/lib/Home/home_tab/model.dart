@@ -19,3 +19,13 @@ class InstituteEvent {
     endDate = data['endDate'];
   }
 }
+
+class StudentParticipation {
+  String? id, eventName, eventId;
+
+  fromJson(var data){
+    id = data['id'];
+    eventName = data['event']['eventName'];
+    eventId = data['event']['id'];
+  }
+}
