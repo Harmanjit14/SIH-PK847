@@ -147,7 +147,8 @@ class Certificate_Request(models.Model):
         ("1", "Migration Certificate"),
         ("2", "Domicile Certificate"),
         ("3", "Affadavit"),
-        ("4", "Character Certificate")
+        ("4", "Character Certificate"),
+        ("5", "Event"),
     )
 
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
@@ -167,6 +168,7 @@ class Certificate_Request(models.Model):
     semester = models.IntegerField(blank=True, null=True)
     added = models.DateField(auto_now_add=True, null=True)
     hardcopy_requested = models.BooleanField(default=False, null=True)
+    event_id = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"{self.id}"

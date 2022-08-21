@@ -100,6 +100,8 @@ class Add_Certificate_Request(graphene.Mutation):
 
     class Arguments:
         semester = graphene.Int()
+        eventId = graphene.String()
+        hardcopy = graphene.Boolean(required=True)
         certificate = graphene.String(required=True)
 
     def mutate(self, info, **kwargs):
@@ -116,9 +118,9 @@ class Add_Certificate_Request(graphene.Mutation):
         ret = Certificate_Request(
             certificate_status=kwargs.get('certificate'),
             student=student,
-            semester=kwargs.get('semester')
-
-
+            semester=kwargs.get('semester'),
+            hardcopy_requested=kwargs.get('hardcopy'),
+            event_id=kwargs.get('eventId')
         )
         ret.save()
 
@@ -222,6 +224,7 @@ class AddEventInformation(graphene.Mutation):
 
         return AddEventInformation(event=ret)
 
+
 class UpdateDeliveryStatus(graphene.Mutation):
 
     requestStatus = graphene.Field(CertificateRequestType)
@@ -242,17 +245,18 @@ class UpdateDeliveryStatus(graphene.Mutation):
             raise GraphQLError("Not a Teacher!")
 
         req = Certificate_Request.objects.get(id=id)
-        req.delivery_status= status_code
+        req.delivery_status = status_code
         req.save()
 
         return UpdateDeliveryStatus(requestStatus=req)
+
 
 class AssignManager(graphene.Mutation):
     assignmentOfManager = graphene.String()
 
     class Arguments:
-        certificate_request_id=graphene.String(required=True)
-        manager_id=graphene.String(required=True)
+        certificate_request_id = graphene.String(required=True)
+        manager_id = graphene.String(required=True)
 
     def mutate(self, info, certificate_request_id, manager_id):
         user = info.context.user
@@ -264,21 +268,23 @@ class AssignManager(graphene.Mutation):
 
         if teacher == None:
             raise GraphQLError("Not a Teacher!")
-        
-        certificateRequest=Certificate_Request.objects.get(id=certificate_request_id)
-        managerRequest=Manager.objects.get(id=manager_id)
-        certificateRequest.delivery_manager=managerRequest
-        
+
+        certificateRequest = Certificate_Request.objects.get(
+            id=certificate_request_id)
+        managerRequest = Manager.objects.get(id=manager_id)
+        certificateRequest.delivery_manager = managerRequest
+
         certificateRequest.save()
-    
+
         return AssignManager(assignmentOfManager=certificateRequest)
-        
+
+
 class AssignDeliveryMan(graphene.Mutation):
     assignmentOfDelivery = graphene.String()
 
     class Arguments:
-        certificate_request_id=graphene.String(required=True)
-        delivery_id=graphene.String(required=True)
+        certificate_request_id = graphene.String(required=True)
+        delivery_id = graphene.String(required=True)
 
     def mutate(self, info, certificate_request_id, delivery_id):
         usr = info.context.user
@@ -289,20 +295,15 @@ class AssignDeliveryMan(graphene.Mutation):
         manager = Manager.objects.get(user=usr)
         if manager == None:
             raise GraphQLError('Not a valid Manager')
-        
-        certificateRequest=Certificate_Request.objects.get(id=certificate_request_id)
-        deliveryRquest=Delivery.objects.get(id=delivery_id)
-        certificateRequest.delivery_man=deliveryRquest
+
+        certificateRequest = Certificate_Request.objects.get(
+            id=certificate_request_id)
+        deliveryRquest = Delivery.objects.get(id=delivery_id)
+        certificateRequest.delivery_man = deliveryRquest
 
         certificateRequest.save()
 
         return AssignDeliveryMan(assignmentOfDelivery=certificateRequest)
-
-            
-
-    
-
-
 
 
 class Mutation(graphene.ObjectType):
@@ -317,4 +318,3 @@ class Mutation(graphene.ObjectType):
     update_delivery = UpdateDeliveryStatus.Field()
     manager_assignment = AssignManager.Field()
     delivery_assignement = AssignDeliveryMan.Field()
-    

@@ -517,7 +517,7 @@ class Query(graphene.ObjectType):
 
         return l
 
-    def resolve_get_all_manager(self,info):
+    def resolve_get_all_manager(self, info):
         usr = info.context.user
 
         if usr.is_anonymous:
@@ -526,10 +526,7 @@ class Query(graphene.ObjectType):
         teacher = Teacher.objects.get(user=usr)
         if teacher == None:
             raise GraphQLError('Not a valid teacher')
-        
-        manager_list=Manager.objects.all()
+
+        manager_list = Manager.objects.all()
 
         return manager_list
-        
-
-
