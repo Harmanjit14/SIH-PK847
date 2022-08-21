@@ -6,6 +6,9 @@ import 'package:graphql/client.dart';
 
 ColorScheme light = const ColorScheme.light();
 
+const razorPaySecret = "eg4DJ2rVwUw7VQNP4D1u2JcZ";
+const razorpayKey = "rzp_test_cJu9VokepiK9cp";
+
 Future<bool> requestCertificate(String certificateId, bool hardcopy,
     {int? semesterNo, String? eventId}) async {
   HttpLink httpLink = HttpLink(
