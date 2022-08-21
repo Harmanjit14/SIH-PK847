@@ -247,6 +247,63 @@ class UpdateDeliveryStatus(graphene.Mutation):
 
         return UpdateDeliveryStatus(requestStatus=req)
 
+class AssignManager(graphene.Mutation):
+    assignmentOfManager = graphene.String()
+
+    class Arguments:
+        certificate_request_id=graphene.String(required=True)
+        manager_id=graphene.String(required=True)
+
+    def mutate(self, info, certificate_request_id, manager_id):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError("Not Logged In!")
+
+        teacher = Teacher.objects.get(user=user)
+
+        if teacher == None:
+            raise GraphQLError("Not a Teacher!")
+        
+        certificateRequest=Certificate_Request.objects.get(id=certificate_request_id)
+        managerRequest=Manager.objects.get(id=manager_id)
+        certificateRequest.delivery_manager=managerRequest
+        
+        certificateRequest.save()
+    
+        return AssignManager(assignmentOfManager=certificateRequest)
+        
+class AssignDeliveryMan(graphene.Mutation):
+    assignmentOfDelivery = graphene.String()
+
+    class Arguments:
+        certificate_request_id=graphene.String(required=True)
+        delivery_id=graphene.String(required=True)
+
+    def mutate(self, info, certificate_request_id, delivery_id):
+        usr = info.context.user
+
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        manager = Manager.objects.get(user=usr)
+        if manager == None:
+            raise GraphQLError('Not a valid Manager')
+        
+        certificateRequest=Certificate_Request.objects.get(id=certificate_request_id)
+        deliveryRquest=Delivery.objects.get(id=delivery_id)
+        certificateRequest.delivery_man=deliveryRquest
+
+        certificateRequest.save()
+
+        return AssignDeliveryMan(assignmentOfDelivery=certificateRequest)
+
+            
+
+    
+
+
+
 
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
@@ -258,3 +315,6 @@ class Mutation(graphene.ObjectType):
     register_participant = RegisterInEvent.Field()
     delete_participant = DeleteParticiaption.Field()
     update_delivery = UpdateDeliveryStatus.Field()
+    manager_assignment = AssignManager.Field()
+    delivery_assignement = AssignDeliveryMan.Field()
+    

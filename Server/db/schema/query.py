@@ -33,6 +33,7 @@ class Query(graphene.ObjectType):
     get_all_sem_subjects = graphene.List(SubjectType, sem=graphene.Int(
         required=True), degree=graphene.String(required=True), graduating_year=graphene.Int(required=True))
     get_all_request = graphene.List(CertificateRequestType)
+    get_all_manager = graphene.List(ManagerUtil)
 
     # Get delivery persons info
     get_delivery_persons = graphene.List(DeliveryUtil)
@@ -515,3 +516,20 @@ class Query(graphene.ObjectType):
             verified=True).filter(delivery_done=False)
 
         return l
+
+    def resolve_get_all_manager(self,info):
+        usr = info.context.user
+
+        if usr.is_anonymous:
+            raise GraphQLError('Not logged in!')
+
+        teacher = Teacher.objects.get(user=usr)
+        if teacher == None:
+            raise GraphQLError('Not a valid teacher')
+        
+        manager_list=Manager.objects.all()
+
+        return manager_list
+        
+
+
