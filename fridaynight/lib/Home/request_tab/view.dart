@@ -42,7 +42,7 @@ class _RequestsTabState extends State<RequestsTab> {
                     child: Text(
                       "My Requests",
                       style: TextStyle(
-                          fontSize: 35,
+                          fontSize: 30,
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                           shadows: [
