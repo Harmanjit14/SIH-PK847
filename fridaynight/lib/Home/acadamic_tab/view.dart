@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fridaynight/Auth/query.dart';
+import 'package:fridaynight/Home/acadamic_tab/view_subject.dart';
 import 'package:fridaynight/utils.dart';
 import 'package:get/get.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class AcadamicTab extends StatefulWidget {
   const AcadamicTab({Key? key}) : super(key: key);
@@ -11,6 +17,77 @@ class AcadamicTab extends StatefulWidget {
 }
 
 class _AcadamicTabState extends State<AcadamicTab> {
+  late Razorpay _razorpay;
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    return;
+    // Do something when payment succeeds
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    return;
+    // Do something when payment fails
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    return;
+    // Do something when an external wallet is selected
+  }
+
+  @override
+  void initState() {
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
+
+  Future<void> generateODID(int amount) async {
+    var orderOptions = {
+      'amount': amount * 100, // amount in the smallest currency unit
+      'currency': "INR",
+      'receipt': "order_rcptid_11"
+    };
+    final client = HttpClient();
+    final request =
+        await client.postUrl(Uri.parse('https://api.razorpay.com/v1/orders'));
+    request.headers
+        .set(HttpHeaders.contentTypeHeader, "application/json; charset=UTF-8");
+    String basicAuth =
+        'Basic ${base64Encode(utf8.encode('$razorpayKey:$razorpaySecret'))}';
+    request.headers.set(HttpHeaders.authorizationHeader, basicAuth);
+    request.add(utf8.encode(json.encode(orderOptions)));
+    final response = await request.close();
+    response.transform(utf8.decoder).listen((contents) {
+      debugPrint('ORDERID$contents');
+      String orderId = contents.split(',')[0].split(":")[1];
+      orderId = orderId.substring(1, orderId.length - 1);
+
+      Fluttertoast.showToast(
+          msg: "ORDERID: $orderId", toastLength: Toast.LENGTH_SHORT);
+
+      Map<String, dynamic> checkoutOptions = {
+        'key': razorpayKey,
+        'amount': amount * 100,
+        'name': 'Wallet Top-Up Demo',
+        'description': '${institute.instituteName} Wallet recharge',
+        'prefill': {'contact': student.mobile, 'email': student.email},
+      };
+      try {
+        _razorpay.open(checkoutOptions);
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -69,35 +146,37 @@ class _AcadamicTabState extends State<AcadamicTab> {
             childAspectRatio: (1),
           ),
           children: [
-            itemContainer("My Subjects", Icons.menu_book, navigator(0)),
-            itemContainer("My Grades", Icons.grade, navigator(1)),
-            itemContainer(
-                "Add Money", Icons.account_balance_wallet, navigator(2)),
-            itemContainer("Req Transcript", Icons.description, navigator(3)),
-            itemContainer("Req Migration", Icons.transfer_within_a_station, navigator(4)),
-            itemContainer("Req Character", Icons.person, navigator(5)),
-            itemContainer("Grievances", Icons.mail, navigator(6)),
+            itemContainer("My Subjects", Icons.menu_book, 0),
+            itemContainer("My Grades", Icons.grade, 1),
+            itemContainer("Add Money", Icons.account_balance_wallet, 2),
+            itemContainer("Req Transcript", Icons.description, 3),
+            itemContainer("Req Migration", Icons.transfer_within_a_station, 4),
+            itemContainer("Req Character", Icons.person, 5),
+            itemContainer("Grievances", Icons.mail, 6),
           ],
         ),
       ],
     );
   }
 
-  navigator(int index) {
+  navigator(int index) async {
     switch (index) {
-      case 0:{Get.to(()=>);}
-        
-        break;
+      case 0:
+        {
+          int sem = await showSemesterSectionPopup(context);
+          if (sem != -1) Get.to(() => ViewSubjects(sem));
+          return;
+        }
       default:
     }
     return;
   }
 
-  Widget itemContainer(String title, IconData icon, ontap,
+  Widget itemContainer(String title, IconData icon, int index,
       {String? certificateIndex}) {
     return MaterialButton(
       padding: const EdgeInsets.all(0),
-      onPressed: ontap,
+      onPressed: () => navigator(index),
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(boxShadow: [

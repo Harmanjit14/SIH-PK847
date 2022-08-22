@@ -6,6 +6,7 @@ class Student {
       mobile,
       dob,
       degree,
+      degreeIndex,
       address,
       batch,
       fatherName,

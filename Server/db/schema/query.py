@@ -34,7 +34,8 @@ class Query(graphene.ObjectType):
         required=True), degree=graphene.String(required=True), graduating_year=graphene.Int(required=True))
     get_all_sem_subjects_for_students = graphene.List(SubjectType, sem=graphene.Int(
         required=True), degree=graphene.String(required=True), graduating_year=graphene.Int(required=True))
-    get_all_sem_grades_for_students=graphene.List(AcadamicRecordsType, sem=graphene.Int(required=True))
+    get_all_sem_grades_for_students = graphene.List(
+        AcadamicRecordsType, sem=graphene.Int(required=True))
     get_all_request = graphene.List(CertificateRequestType)
     get_all_manager = graphene.List(ManagerUtil)
 
@@ -550,7 +551,7 @@ class Query(graphene.ObjectType):
 
         return subjects
 
-    def resolve_get_all_sem_grades_for_students(self, info , sem):
+    def resolve_get_all_sem_grades_for_students(self, info, sem):
         usr = info.context.user
 
         if usr.is_anonymous:
@@ -559,9 +560,8 @@ class Query(graphene.ObjectType):
         student = Student.objects.get(user=usr)
         if student == None:
             raise GraphQLError('Not a valid student!')
-        
-        grades=Academic_Record.objects.filter(institute=student.institute).filter(semester=sem)
+
+        grades = Academic_Record.objects.filter(
+            institute=student.institute).filter(semester=sem)
 
         return grades
-
-

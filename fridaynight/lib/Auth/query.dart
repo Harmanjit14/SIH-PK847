@@ -114,7 +114,9 @@ Future<bool> getStudent() async {
   student.mobile = studentData['mobile'];
   student.dob = studentData['dob'];
   String deg = studentData['degree'].toString();
+
   int degIndex = int.parse(deg[deg.length - 1]);
+  student.degreeIndex = degIndex.toString();
   student.degree = degreeList[degIndex];
   student.batch = studentData['batch'];
   student.fatherName = studentData['fatherName'];
