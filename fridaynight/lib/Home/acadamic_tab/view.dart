@@ -20,12 +20,19 @@ class AcadamicTab extends StatefulWidget {
 class _AcadamicTabState extends State<AcadamicTab> {
   late Razorpay _razorpay;
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    await Fluttertoast.showToast(
+        msg: "Successfully added money to wallet!",
+        gravity: ToastGravity.BOTTOM);
     return;
     // Do something when payment succeeds
   }
 
-  void _handlePaymentError(PaymentFailureResponse response) {
+  void _handlePaymentError(PaymentFailureResponse response) async {
+    await Fluttertoast.showToast(
+        msg:
+            "Failed to add money to wallet. If amount deducted from bank, will be reverted back in 3-7 days.",
+        gravity: ToastGravity.BOTTOM);
     return;
     // Do something when payment fails
   }
@@ -168,15 +175,33 @@ class _AcadamicTabState extends State<AcadamicTab> {
           if (sem != -1) Get.to(() => ViewSubjects(sem));
           return;
         }
-        case 1:
+      case 1:
         {
           int sem = await showSemesterSectionPopup(context);
           if (sem != -1) Get.to(() => MarksView(sem));
           return;
         }
+      case 3:
+        {
+          int sem = await showSemesterSectionPopup(context);
+          await showCertificateRequestDialog(context, 0, semester: sem);
+          return;
+        }
+      case 4:
+        {
+          await showCertificateRequestDialog(context, 1);
+          return;
+        }
+      case 5:
+        {
+          await showCertificateRequestDialog(context, 4);
+          return;
+        }
       default:
+        {
+          return;
+        }
     }
-    return;
   }
 
   Widget itemContainer(String title, IconData icon, int index,

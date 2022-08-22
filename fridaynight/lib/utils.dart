@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fridaynight/Auth/query.dart';
+import 'package:fridaynight/choices_data.dart';
 import 'package:fridaynight/server_data.dart';
 import 'package:graphql/client.dart';
 
@@ -139,4 +140,65 @@ Future<int> showSemesterSectionPopup(BuildContext context) async {
     },
   );
   return selectedIndex;
+}
+
+Future<void> showCertificateRequestDialog(BuildContext context, int index,
+    {int? semester}) async {
+  String certificate = certificate_choices[index];
+
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: true, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(certificate),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: const <Widget>[
+              Text(
+                  'Do you want to request certificate? Please select from below options, If hardcopy selected you will be charged Rs. 30 for safe delivery from your student wallet.'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          MaterialButton(
+            shape: const StadiumBorder(),
+            elevation: 0,
+            color: light.primary,
+            onPressed: () {
+              requestCertificate("$index", false, semesterNo: semester);
+              Navigator.pop(context);
+            },
+            child: Text(
+              'E-Certificate',
+              style: TextStyle(color: light.background),
+            ),
+          ),
+          MaterialButton(
+            shape: const StadiumBorder(),
+            elevation: 0,
+            color: light.primary,
+            onPressed: () async {
+              if (student.wallet! < 30) {
+                await Fluttertoast.showToast(
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    msg:
+                        "Maintain minimum balance of Rs. 30 in your studdent wallet to proceed.");
+                return;
+              }
+              // TODO: update wallet
+
+              requestCertificate("$index", true, semesterNo: semester);
+              Navigator.pop(context);
+            },
+            child: Text(
+              'Hardcopy',
+              style: TextStyle(color: light.background),
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }
