@@ -86,6 +86,30 @@ class _ChatState extends State<Chat> {
         name: "Bot",
         type: false,
       );
+      if (int.tryParse(fulfillmentText) != null) {
+        int resp = int.parse(fulfillmentText);
+        switch (resp) {
+          case 1:
+            {
+              if (await requestCertificate("1", false)) {
+                botMessage = const ChatMessage(
+                  text: "ਮੈਂ ਤੁਹਾਡੀ ਬੇਨਤੀ ਅਧਿਕਾਰੀਆਂ ਨੂੰ ਭੇਜ ਦਿੱਤੀ ਹੈ",
+                  name: "Bot",
+                  type: false,
+                );
+              } else {
+                botMessage = const ChatMessage(
+                  text:
+                      "ਅਫਸੋਸ ਹੈ ਕਿ ਮੈਂ ਤੁਹਾਡੀ ਬੇਨਤੀ ਨੂੰ ਅਧਿਕਾਰੀਆਂ ਨੂੰ ਅੱਗੇ ਭੇਜਣ ਵਿੱਚ ਅਸਮਰੱਥ ਸੀ",
+                  name: "Bot",
+                  type: false,
+                );
+              }
+              return;
+            }
+          default:
+        }
+      }
 
       setState(() {
         _messages.insert(0, botMessage);
