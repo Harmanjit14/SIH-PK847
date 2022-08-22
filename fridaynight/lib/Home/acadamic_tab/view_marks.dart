@@ -4,15 +4,15 @@ import 'package:fridaynight/Home/acadamic_tab/model.dart';
 import 'package:fridaynight/Home/acadamic_tab/query.dart';
 import 'package:fridaynight/utils.dart';
 
-class ViewSubjects extends StatefulWidget {
+class MarksView extends StatefulWidget {
   final int sem;
-  const ViewSubjects(this.sem, {Key? key}) : super(key: key);
+  const MarksView(this.sem, {Key? key}) : super(key: key);
 
   @override
-  State<ViewSubjects> createState() => _ViewSubjectsState();
+  State<MarksView> createState() => _MarksViewState();
 }
 
-class _ViewSubjectsState extends State<ViewSubjects> {
+class _MarksViewState extends State<MarksView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,9 +23,10 @@ class _ViewSubjectsState extends State<ViewSubjects> {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
                 return Center(
-                    child: SpinKitWave(
-                  color: light.primary.withOpacity(0.4),
-                ));
+                  child: SpinKitWave(
+                    color: light.primary.withOpacity(0.4),
+                  ),
+                );
               default:
                 if (snapshot.hasError) {
                   return Center(
@@ -60,9 +61,9 @@ class _ViewSubjectsState extends State<ViewSubjects> {
                         child: Table(
                           border: TableBorder.all(width: 1.5),
                           children: [
-                            const TableRow(children:[
+                            const TableRow(children: [
                               Padding(
-                                padding: const EdgeInsets.all(10),
+                                padding: EdgeInsets.all(10),
                                 child: Text(
                                   "Subject",
                                   style: TextStyle(
@@ -71,7 +72,7 @@ class _ViewSubjectsState extends State<ViewSubjects> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(10),
+                                padding: EdgeInsets.all(10),
                                 child: Text(
                                   "Subject Code",
                                   style: TextStyle(
@@ -80,9 +81,27 @@ class _ViewSubjectsState extends State<ViewSubjects> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(10),
+                                padding: EdgeInsets.all(10),
                                 child: Text(
                                   "Credits",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  "Marks Secured /100",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  "Grade Secured",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -103,6 +122,16 @@ class _ViewSubjectsState extends State<ViewSubjects> {
                                   padding: const EdgeInsets.all(10),
                                   child: Text(
                                       requestList[index].credits.toString()),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                      requestList[index].marks.toString()),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                      requestList[index].grade.toString()),
                                 ),
                               ]);
                             }),

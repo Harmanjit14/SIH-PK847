@@ -56,6 +56,62 @@ Future<List<Subjects>> getSubjects(int semester) async {
   return list;
 }
 
+
+Future<List<Subjects>> getMarks(int semester) async {
+  semester += 1;
+  List<Subjects> list = [];
+  HttpLink httpLink = HttpLink(
+    url,
+  );
+
+  AuthLink authLink = AuthLink(
+    getToken: () async => 'JWT $token',
+  );
+
+  Link link = authLink.concat(httpLink);
+  GraphQLClient client = GraphQLClient(
+    cache: GraphQLCache(),
+    link: link,
+  );
+
+  String queryString = """ 
+{
+  getAllSemGradesForStudents(sem:$semester){
+    subject
+    subjectCode
+    credits
+    marks
+    grade
+    id
+  }
+}
+""";
+  debugPrint(queryString);
+  QueryOptions options = QueryOptions(
+    document: gql(queryString),
+    fetchPolicy: FetchPolicy.cacheFirst,
+  );
+
+  QueryResult data = await client.query(options);
+  if (data.hasException) {
+    debugPrint(data.exception.toString());
+    return list;
+  }
+
+  // Student Request Data
+  List dataList = data.data!['getAllSemSubjects'];
+  debugPrint(dataList.toString());
+  for (var i = 0; i < dataList.length; i++) {
+    var dataMap = dataList[i];
+    var obj = Subjects();
+    obj.fromJson(dataMap);
+    list.add(obj);
+  }
+
+  return list;
+}
+
+
 Future<bool> registerEvent(String eventId) async {
   HttpLink httpLink = HttpLink(
     url,

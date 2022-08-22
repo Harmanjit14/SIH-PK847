@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fridaynight/Auth/model.dart';
-import 'package:fridaynight/Home/request_tab/query.dart';
 import 'package:fridaynight/choices_data.dart';
 import 'package:fridaynight/server_data.dart';
 import "package:graphql/client.dart";

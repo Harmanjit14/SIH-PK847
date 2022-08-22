@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fridaynight/Auth/query.dart';
+import 'package:fridaynight/Home/acadamic_tab/view_marks.dart';
 import 'package:fridaynight/Home/acadamic_tab/view_subject.dart';
 import 'package:fridaynight/utils.dart';
 import 'package:get/get.dart';
@@ -165,6 +166,12 @@ class _AcadamicTabState extends State<AcadamicTab> {
         {
           int sem = await showSemesterSectionPopup(context);
           if (sem != -1) Get.to(() => ViewSubjects(sem));
+          return;
+        }
+        case 1:
+        {
+          int sem = await showSemesterSectionPopup(context);
+          if (sem != -1) Get.to(() => MarksView(sem));
           return;
         }
       default:
