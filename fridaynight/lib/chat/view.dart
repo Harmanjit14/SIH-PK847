@@ -141,7 +141,8 @@ class _ChatState extends State<Chat> {
             {
               if (await requestCertificate("0", false, semesterNo: 0)) {
                 ChatMessage newbotMessage = const ChatMessage(
-                  text: "ਮੈਂ ਤੁਹਾਡੀ ਬੇਨਤੀ ਅਧਿਕਾਰੀਆਂ ਨੂੰ ਭੇਜ ਦਿੱਤੀ ਹੈ",
+                  text:
+                      "मैंने आपका प्रश्न संस्थान के अधिकारियों को भेज दिया है, कृपया प्रमाण पत्र के लिए अपना मेल देखें।",
                   name: "Bot",
                   type: false,
                 );
@@ -151,7 +152,7 @@ class _ChatState extends State<Chat> {
               } else {
                 ChatMessage newbotMessage = const ChatMessage(
                   text:
-                      "ਅਫਸੋਸ ਹੈ ਕਿ ਮੈਂ ਤੁਹਾਡੀ ਬੇਨਤੀ ਨੂੰ ਅਧਿਕਾਰੀਆਂ ਨੂੰ ਅੱਗੇ ਭੇਜਣ ਵਿੱਚ ਅਸਮਰੱਥ ਸੀ",
+                      "मैं संस्थान के अधिकारियों को आपका प्रश्न नहीं भेज सका, कृपया कुछ समय बाद प्रयास करें।",
                   name: "Bot",
                   type: false,
                 );
