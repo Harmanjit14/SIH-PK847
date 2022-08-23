@@ -99,7 +99,7 @@ Future<List<Subjects>> getMarks(int semester) async {
   }
 
   // Student Request Data
-  List dataList = data.data!['getAllSemSubjects'];
+  List dataList = data.data!['getAllSemGradesForStudents'];
   debugPrint(dataList.toString());
   for (var i = 0; i < dataList.length; i++) {
     var dataMap = dataList[i];

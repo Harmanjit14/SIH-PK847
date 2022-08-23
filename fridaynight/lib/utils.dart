@@ -29,7 +29,7 @@ Future<bool> requestCertificate(String certificateId, bool hardcopy,
   if (certificateId == "0" && semesterNo != null) {
     mutationString = """
   mutation{
-  certificateRequest(certificate:"0",hardcopy =$hardcopy ,semester:$semesterNo){
+  certificateRequest(certificate:"0",hardcopy: $hardcopy ,semester:${semesterNo+1}){
     __typename
   }
 }
@@ -50,7 +50,7 @@ Future<bool> requestCertificate(String certificateId, bool hardcopy,
   }
 }
 """;
-  } else if (certificateId == "5") {
+  } else if (certificateId == "5" && eventId!=null) {
     mutationString = """
   mutation{
   certificateRequest(certificate:"5",hardcopy: $hardcopy,eventId:"${eventId}" ){
@@ -66,6 +66,7 @@ Future<bool> requestCertificate(String certificateId, bool hardcopy,
     );
     return false;
   }
+  debugPrint(mutationString);
 
   MutationOptions options = MutationOptions(
     document: gql(mutationString),
@@ -165,7 +166,7 @@ Future<void> showCertificateRequestDialog(BuildContext context, int index,
             shape: const StadiumBorder(),
             elevation: 0,
             color: light.primary,
-            onPressed: () {
+            onPressed: () async{
               requestCertificate("$index", false, semesterNo: semester);
               Navigator.pop(context);
             },

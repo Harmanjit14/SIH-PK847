@@ -162,8 +162,8 @@ class Add_Certificate_Request(graphene.Mutation):
                 print(e)
 
         if int(certificate) == 5:
-            eventId = int(kwargs.get("eventId"))
-            event = InstituteEvent.objects.get(id=eventId)
+            eventId = kwargs.get("eventId")
+            ret.event_id = eventId
             location = f'static/files/{student.id}event_{eventId}.pdf'
             try:
                 context = get_other_certifcates_context(

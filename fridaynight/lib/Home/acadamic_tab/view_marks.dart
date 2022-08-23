@@ -18,7 +18,7 @@ class _MarksViewState extends State<MarksView> {
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder<List<Subjects>?>(
-          future: getSubjects(widget.sem),
+          future: getMarks(widget.sem),
           builder: ((context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:

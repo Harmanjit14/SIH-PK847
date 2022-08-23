@@ -1,6 +1,7 @@
 class Subjects {
   String? name, code, grade;
-  double? credits, marks;
+  int? marks;
+  double? credits;
 
   fromJson(var data) {
     name = data['subject'];
