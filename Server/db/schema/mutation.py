@@ -375,14 +375,15 @@ class AssignDeliveryMan(graphene.Mutation):
 
         return AssignDeliveryMan(assignmentOfDelivery=certificateRequest)
 
+
 class WalletBalance(graphene.Mutation):
     walletBalance = graphene.Int()
 
     class Arguments:
-        amount=graphene.Int(required=True)
-        add=graphene.Boolean()
-        amount_added=graphene.Int()
-        amount_deducted=graphene.Int()
+        amount = graphene.Int(required=True)
+        add = graphene.Boolean()
+        amount_added = graphene.Int()
+        amount_deducted = graphene.Int()
 
     def mutate(self, info, amount, add, amount_added, amount_deducted):
         usr = info.context.user
@@ -393,17 +394,18 @@ class WalletBalance(graphene.Mutation):
         student = Student.objects.get(user=usr)
         if student == None:
             raise GraphQLError('Not a valid Student!')
-        
-        walletAmount=Student.objects.get(wallet=amount)
+
+        walletAmount = Student.objects.get(wallet=amount)
         if add == True:
-            walletAmount.wallet=walletAmount.wallet+amount_added
-        
+            walletAmount.wallet = walletAmount.wallet+amount_added
+
         else:
-            walletAmount.wallet=walletAmount.wallet-amount_deducted
-        
+            walletAmount.wallet = walletAmount.wallet-amount_deducted
+
         walletAmount.save()
-        
+
         return WalletBalance(walletBalance=walletAmount)
+
 
 class UpdateStudentStatus (graphene.Mutation):
     status = graphene.Field(StudentType)
@@ -411,7 +413,7 @@ class UpdateStudentStatus (graphene.Mutation):
     class Arguments:
         id = graphene.String(required=True)
         status = graphene.Boolean(required=True)
-    
+
     def mutate(self, info, id, status):
         user = info.context.user
 
@@ -422,20 +424,12 @@ class UpdateStudentStatus (graphene.Mutation):
 
         if teacher == None:
             raise GraphQLError("Not a Teacher!")
-        
-        student = Student.objects.get(id=id)
-        student.passed=status
 
+        student = Student.objects.get(id=id)
+        student.passed = status
         student.save()
 
         return UpdateStudentStatus(status=student)
-
-
-
-
-
-        
-
 
 
 class Mutation(graphene.ObjectType):
