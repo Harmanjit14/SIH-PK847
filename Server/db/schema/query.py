@@ -51,7 +51,7 @@ class Query(graphene.ObjectType):
     student_participation = graphene.List(ParticipantsType)
     student_prize_participation = graphene.List(ParticipantsType)
 
-    def resolve_student_requests(elf, info):
+    def resolve_student_requests(self, info):
         usr = info.context.user
         if usr.is_anonymous:
             raise GraphQLError('Not logged in!')
@@ -241,7 +241,6 @@ class Query(graphene.ObjectType):
 
     def resolve_get_all_student_participated(self, info, id):
         usr = info.context.user
-
         if usr.is_anonymous:
             raise GraphQLError('Not logged in!')
 
