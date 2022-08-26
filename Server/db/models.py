@@ -8,7 +8,14 @@ from .degree_data import degree_choices
 
 
 class Institute(models.Model):
+    institute_choices=(
+        ("0","College"),
+        ("1","School")
+    )
+    
     id = models.UUIDField(default=uuid4, editable=False, primary_key=True)
+    institute_type = models.CharField(
+        choices=institute_choices, default="0", max_length=255, null=False, blank=False)
     name = models.CharField(blank=False, null=True,
                             editable=True, max_length=255)
     mail = models.EmailField(max_length=255)
@@ -17,6 +24,8 @@ class Institute(models.Model):
     signature = models.URLField(
         default='https://firebasestorage.googleapis.com/v0/b/stately-pulsar-343510.appspot.com/o/static%2Fdefsignature.png?alt=media&token=a53e5c47-51e3-46cd-b415-4ca6e053e969')
     contact = PhoneNumberField()
+
+
 
     def __str__(self):
         return self.name
@@ -80,6 +89,8 @@ class Student(models.Model):
     father_name = models.CharField(blank=True, max_length=255)
     mother_name = models.CharField(blank=True, max_length=255)
     current_semester = models.IntegerField(default=1, null=True, blank=False)
+    passed = models.BooleanField(default=False, null=True)
+ 
 
     def __str__(self):
         return f'{self.institute.name} {self.roll}'
@@ -149,6 +160,7 @@ class Certificate_Request(models.Model):
         ("3", "Affadavit"),
         ("4", "Character Certificate"),
         ("5", "Event"),
+
     )
 
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)

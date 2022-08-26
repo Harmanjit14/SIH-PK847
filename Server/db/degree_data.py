@@ -36,6 +36,8 @@ degree_choices = {
     ('34', 'B.E/B.Tech in Polymer Engineering'),
     ('35', 'B.E/B.Tech in Geotechnical Engineering'),
     ('36', 'B.E / B.Tech in Nuclear Engineering'),
+    ('37', 'Secondary'),
+    ('38', 'Senior Secondary')
 }
 
 degree_list=[
@@ -76,4 +78,6 @@ degree_list=[
  'B.E/B.Tech in Polymer Engineering',
  'B.E/B.Tech in Geotechnical Engineering',
  'B.E / B.Tech in Nuclear Engineering',
+ 'Secondary',
+ 'Senior Secondary'
 ]
