@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fridaynight/Auth/query.dart';
+import 'package:fridaynight/Home/acadamic_tab/view.dart';
 import 'package:fridaynight/Home/home_tab/view.dart';
 import 'package:fridaynight/Home/profile_tab/view.dart';
 import 'package:fridaynight/Home/request_tab/view.dart';
@@ -39,11 +40,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: PageView(
           physics: const NeverScrollableScrollPhysics(),
           controller: _controller,
-          children: [
-            HomePage(),
-            const RequestsTab(),
-            Text("Acadamic"),
-            const ProfileTab(),
+          children: const [
+             HomePage(),
+             RequestsTab(),
+             AcadamicTab(),
+             ProfileTab(),
           ],
         ),
       ),

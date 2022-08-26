@@ -48,7 +48,7 @@ const List<String> delivery_choices = [
   "Rejected",
 ];
 
-const List<String> certificate_choices = [
+List<String> certificate_choices = [
   "Semester Certificate",
   "Migration Certificate",
   "Domicile Certificate",

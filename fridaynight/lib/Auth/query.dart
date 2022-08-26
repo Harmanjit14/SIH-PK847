@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fridaynight/Auth/model.dart';
-import 'package:fridaynight/Home/request_tab/query.dart';
 import 'package:fridaynight/choices_data.dart';
 import 'package:fridaynight/server_data.dart';
 import "package:graphql/client.dart";
@@ -114,7 +113,9 @@ Future<bool> getStudent() async {
   student.mobile = studentData['mobile'];
   student.dob = studentData['dob'];
   String deg = studentData['degree'].toString();
+
   int degIndex = int.parse(deg[deg.length - 1]);
+  student.degreeIndex = degIndex.toString();
   student.degree = degreeList[degIndex];
   student.batch = studentData['batch'];
   student.fatherName = studentData['fatherName'];

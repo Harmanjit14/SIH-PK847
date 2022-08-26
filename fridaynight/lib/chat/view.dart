@@ -11,6 +11,7 @@ import 'package:dialogflow_grpc/generated/google/cloud/dialogflow/v2beta1/sessio
 dialogflowLib.DialogflowGrpcV2Beta1? dialogflow;
 SpeechToText? speechToText;
 RecognitionConfig? config;
+String languageCode = "hi-IN";
 
 class Chat extends StatefulWidget {
   const Chat({Key? key}) : super(key: key);
@@ -61,7 +62,7 @@ class _ChatState extends State<Chat> {
       model: RecognitionModel.basic,
       enableAutomaticPunctuation: true,
       sampleRateHertz: 16000,
-      languageCode: 'pa-IN');
+      languageCode: languageCode);
 
   void handleSubmitted(text) async {
     _textController.clear();
@@ -76,7 +77,8 @@ class _ChatState extends State<Chat> {
       _messages.insert(0, message);
     });
 
-    DetectIntentResponse data = await dialogflow!.detectIntent(text, 'pa-IN');
+    DetectIntentResponse data =
+        await dialogflow!.detectIntent(text, languageCode);
     String fulfillmentText = data.queryResult.fulfillmentText;
     debugPrint("DialogFlow");
     debugPrint(fulfillmentText);
@@ -86,11 +88,90 @@ class _ChatState extends State<Chat> {
         name: "Bot",
         type: false,
       );
+      if (int.tryParse(fulfillmentText) != null) {
+        int resp = int.parse(fulfillmentText);
+        switch (languageCode) {
+          case "pa-IN":
+            {
+              ChatMessage bot = const ChatMessage(
+                text: "ਮੈਂ ਤੁਹਾਡੀ ਬੇਨਤੀ ਅਧਿਕਾਰੀਆਂ ਨੂੰ ਭੇਜ ਦਿੱਤੀ ਹੈ",
+                name: "Bot",
+                type: false,
+              );
+              setState(() {
+                _messages.insert(0, bot);
+              });
+            }
+            break;
+          case "hi-IN":
+            {
+              ChatMessage bot = const ChatMessage(
+                text:
+                    "कृपया कुछ मिनट प्रतीक्षा करें जब तक कि मैं आपकी क्वेरी को अग्रेषित न कर दूं",
+                name: "Bot",
+                type: false,
+              );
+              setState(() {
+                _messages.insert(0, bot);
+              });
+            }
+            break;
+          default:
+        }
+        switch (resp) {
+          case 1:
+            {
+              if (await requestCertificate("1", false)) {
+                botMessage = const ChatMessage(
+                  text: "ਮੈਂ ਤੁਹਾਡੀ ਬੇਨਤੀ ਅਧਿਕਾਰੀਆਂ ਨੂੰ ਭੇਜ ਦਿੱਤੀ ਹੈ",
+                  name: "Bot",
+                  type: false,
+                );
+              } else {
+                botMessage = const ChatMessage(
+                  text:
+                      "ਅਫਸੋਸ ਹੈ ਕਿ ਮੈਂ ਤੁਹਾਡੀ ਬੇਨਤੀ ਨੂੰ ਅਧਿਕਾਰੀਆਂ ਨੂੰ ਅੱਗੇ ਭੇਜਣ ਵਿੱਚ ਅਸਮਰੱਥ ਸੀ",
+                  name: "Bot",
+                  type: false,
+                );
+              }
+              return;
+            }
+          case 3:
+            {
+              if (await requestCertificate("0", false, semesterNo: 0)) {
+                ChatMessage newbotMessage = const ChatMessage(
+                  text:
+                      "मैंने आपका प्रश्न संस्थान के अधिकारियों को भेज दिया है, कृपया प्रमाण पत्र के लिए अपना मेल देखें।",
+                  name: "Bot",
+                  type: false,
+                );
+                setState(() {
+                  _messages.insert(0, newbotMessage);
+                });
+              } else {
+                ChatMessage newbotMessage = const ChatMessage(
+                  text:
+                      "मैं संस्थान के अधिकारियों को आपका प्रश्न नहीं भेज सका, कृपया कुछ समय बाद प्रयास करें।",
+                  name: "Bot",
+                  type: false,
+                );
+                setState(() {
+                  _messages.insert(0, newbotMessage);
+                });
+              }
+              return;
+            }
+          default:
+        }
+        return;
+      }
 
       setState(() {
         _messages.insert(0, botMessage);
       });
     }
+    return;
   }
 
   void streamingRecognize() async {
@@ -117,19 +198,19 @@ class _ChatState extends State<Chat> {
           data.results.map((e) => e.alternatives.first.transcript).join('\n');
 
       if (data.results.first.isFinal) {
-        responseText += '\n' + currentText;
+        responseText += '\n$currentText';
         setState(() {
           text = responseText;
           recognizeFinished = true;
         });
       } else {
         setState(() {
-          text = responseText + '\n' + currentText;
+          text = '$responseText\n$currentText';
           recognizeFinished = true;
         });
       }
     }, onDone: () {
-      setState(() async {
+      setState(() {
         handleSubmitted(responseText);
         recognizing = false;
       });

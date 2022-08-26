@@ -1,6 +1,8 @@
-from atexit import register
-from .types import *
 
+from server.settings import EMAIL_HOST_USER
+from django.core.mail import EmailMessage
+from .types import *
+import os
 import graphene
 from django.contrib.auth.models import User
 from db.utils import *
@@ -115,6 +117,9 @@ class Add_Certificate_Request(graphene.Mutation):
         if student == None:
             raise GraphQLError("Not a valid Student!")
 
+        certificate = kwargs.get("certificate")
+        hardcopy = kwargs.get('hardcopy')
+
         ret = Certificate_Request(
             certificate_status=kwargs.get('certificate'),
             student=student,
@@ -123,6 +128,71 @@ class Add_Certificate_Request(graphene.Mutation):
             event_id=kwargs.get('eventId')
         )
         ret.save()
+
+        if int(certificate) == 0:
+            sem = int(kwargs.get("semester"))
+            location = f'static/files/{student.id}sem_{sem}.pdf'
+            try:
+                context = get_semester_certifcate_context(
+                    student=student, semester=sem)
+
+                if context['error'] == True:
+                    raise GraphQLError('Semester data does not exist')
+
+                resp = render_to_pdf('certificate.html', location, context)
+                if not resp:
+                    raise GraphQLError('failed to create certificate')
+
+                mail = EmailMessage(f"Certificate SEM: {sem}",
+                                    f"Here is your ceritificate\n",
+                                    EMAIL_HOST_USER,
+                                    [student.email])
+                mail.attach_file(location)
+                mail.send()
+                os.remove(location)
+                if ret.hardcopy_requested == True:
+                    ret.verified = True
+                    ret.delivery_status = "0"
+                    ret.save()
+                else:
+                    ret.delete()
+
+            except Exception as e:
+                # raise GraphQLError(str(e))
+                print(e)
+
+        if int(certificate) == 5:
+            eventId = kwargs.get("eventId")
+            ret.event_id = eventId
+            location = f'static/files/{student.id}event_{eventId}.pdf'
+            try:
+                context = get_other_certifcates_context(
+                    student=student)
+
+                if context['error'] == True:
+                    raise GraphQLError('Certificate data does not exist')
+
+                resp = render_to_pdf('character.html', location, context)
+                if not resp:
+                    raise GraphQLError('failed to create certificate')
+
+                mail = EmailMessage(f"Event Certificate",
+                                    f"Here is your ceritificate\n",
+                                    EMAIL_HOST_USER,
+                                    [student.email])
+                mail.attach_file(location)
+                mail.send()
+                os.remove(location)
+                if ret.hardcopy_requested == True:
+                    ret.verified = True
+                    ret.delivery_status = "0"
+                    ret.save()
+                else:
+                    ret.delete()
+
+            except Exception as e:
+                # raise GraphQLError(str(e))
+                print(e)
 
         return Add_Certificate_Request(certificate_Request=ret)
 
