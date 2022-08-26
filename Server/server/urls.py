@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 from django.contrib import admin
 from django.urls import path
-from db.views import certificate
+from db.views import answer, certificate
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +27,10 @@ urlpatterns = [
 
 urlpatterns += [
     path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True))),
+]
+
+urlpatterns +=[
+  path('answer', answer, name='answer'),
 ]
 
 
